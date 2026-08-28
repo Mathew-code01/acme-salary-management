@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+server/node_modules
+client/node_modules
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+.vite/
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Temporary files
+tmp/
+temp/
+
+# TypeScript
+*.tsbuildinfo
