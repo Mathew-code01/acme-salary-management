@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../server/src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Country {
+  id        Int        @id @default(autoincrement())
+  code      String     @unique
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  employees Employee[]
+
+  @@index([name])
+  @@index([code])
+}
+
+model Department {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  employees Employee[]
+
+  @@index([name])
+}
+
+model Role {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  employees Employee[]
+
+  @@index([name])
+}
+
+model Employee {
+  id           Int        @id @default(autoincrement())
+  employeeCode String     @unique
+  firstName    String
+  lastName     String
+  email        String     @unique
+  countryId    Int
+  departmentId Int
+  roleId       Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  country      Country    @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  salary       Salary?
+
+  @@index([countryId])
+  @@index([departmentId])
+  @@index([roleId])
+  @@index([lastName, firstName])
+  @@index([departmentId, roleId])
+  @@index([countryId, departmentId])
+  @@index([createdAt])
+}
+
+model Salary {
+  id           Int      @id @default(autoincrement())
+  employeeId   Int      @unique
+  amountCents  Int
+  currency     String   @default("USD")
+  effectiveFrom DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([amountCents])
+  @@index([currency])
+  @@index([effectiveFrom])
+}

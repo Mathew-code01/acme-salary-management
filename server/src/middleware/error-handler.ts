@@ -5,8 +5,8 @@ import type { ErrorRequestHandler, Request } from 'express';
 
 import { env } from '../config/env.js';
 import { AppError } from '../lib/errors.js';
-import { errorResponse } from '../lib/response.js';
 import { logger } from '../lib/logger.js';
+import { errorResponse } from '../lib/response.js';
 
 function getRequestId(request: Request): string | undefined {
   return request.requestId;
@@ -44,21 +44,15 @@ function normalizeError(error: unknown): AppError {
 
 export const errorHandler: ErrorRequestHandler = (error, request, response, _next) => {
   const normalizedError = normalizeError(error);
-
   const requestId = getRequestId(request);
 
   const logPayload = {
-    requestId,
-
+    ...(requestId ? { requestId } : {}),
     method: request.method,
-
     path: request.originalUrl,
-
     statusCode: normalizedError.statusCode,
-
     errorCode: normalizedError.code,
-
-    err: error instanceof Error ? error : undefined,
+    ...(error instanceof Error ? { err: error } : {}),
   };
 
   if (normalizedError.statusCode >= 500) {
@@ -73,14 +67,20 @@ export const errorHandler: ErrorRequestHandler = (error, request, response, _nex
 
   const includeDetails = !env.isProduction || normalizedError.statusCode < 500;
 
-  response.status(normalizedError.statusCode).json(
-    errorResponse(
-      normalizedError.code,
-      normalizedError.message,
-      includeDetails ? normalizedError.details : undefined,
-      {
+  const meta = requestId
+    ? {
         requestId,
-      },
-    ),
-  );
+      }
+    : undefined;
+
+  response
+    .status(normalizedError.statusCode)
+    .json(
+      errorResponse(
+        normalizedError.code,
+        normalizedError.message,
+        includeDetails ? normalizedError.details : undefined,
+        meta,
+      ),
+    );
 };
