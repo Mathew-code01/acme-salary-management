@@ -5,6 +5,4 @@ coverage
 .vite
 playwright-report
 test-results
-pnpm-lock.yaml
-*.db
-*.db-journal
+prisma/migrations
