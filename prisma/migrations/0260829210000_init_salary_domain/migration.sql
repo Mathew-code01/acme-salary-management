@@ -1,3 +1,4 @@
+-- prisma/migrations/0260829210000_init_salary_domain/migration.sql
 -- CreateTable
 CREATE TABLE "Country" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -1,6 +1,17 @@
-import { PrismaClient } from './../server/src/generated/prisma';
+// prisma/seed.ts
 
-const prisma = new PrismaClient();
+import 'dotenv/config';
+
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaClient } from '../server/src/generated/prisma/client';
+
+const adapter = new PrismaBetterSqlite3({
+  url: process.env.DATABASE_URL!,
+});
+
+const prisma = new PrismaClient({
+  adapter,
+});
 
 const EMPLOYEE_COUNT = 10_000;
 
@@ -305,7 +316,6 @@ async function seedEmployees() {
 
   await prisma.employee.createMany({
     data: employeeRows,
-    skipDuplicates: true,
   });
 }
 
@@ -403,10 +413,22 @@ async function verifySeed() {
   }
 }
 
+async function resetSeedData() {
+  console.log('Clearing existing seed data...');
+
+  await prisma.salary.deleteMany();
+  await prisma.employee.deleteMany();
+  await prisma.role.deleteMany();
+  await prisma.department.deleteMany();
+  await prisma.country.deleteMany();
+}
+
 async function main() {
   console.log('Starting deterministic database seed...');
   console.log(`Seed: ${SEED}`);
   console.log(`Employees: ${EMPLOYEE_COUNT}`);
+
+  await resetSeedData();
 
   await seedReferenceData();
 
