@@ -1,14 +1,14 @@
 // server/src/routes/index.ts
 
-
 import { Router } from 'express';
 
-import healthRoutes from './health.routes.js';
-
-import { HEALTH_PATH } from '../config/constants.js';
+import employeeRoutes from './employee.routes';
+import healthRoutes from './health.routes';
 
 const router = Router();
 
-router.use(HEALTH_PATH, healthRoutes);
+router.use('/employees', employeeRoutes);
+
+router.use('/health', healthRoutes);
 
 export default router;
