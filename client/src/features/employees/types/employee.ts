@@ -1,6 +1,14 @@
+
 // client/src/features/employees/types/employee.ts
 
+import type { Salary } from '../../salary/types/salary';
+
 export type EmployeeStatus = 'ACTIVE' | 'INACTIVE';
+
+export interface EmployeeOption {
+  id: number;
+  name: string;
+}
 
 export interface Employee {
   id: number;
@@ -23,6 +31,18 @@ export interface Employee {
 
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface EmployeeRelation {
+  id: number;
+  name: string;
+}
+
+export interface EmployeeDetails extends Employee {
+  country: EmployeeRelation | null;
+  department: EmployeeRelation | null;
+  role: EmployeeRelation | null;
+  salary: Salary | null;
 }
 
 export interface EmployeeListFilters {
@@ -49,11 +69,6 @@ export interface EmployeePagination {
 export interface EmployeeListResponse {
   items: Employee[];
   pagination: EmployeePagination;
-}
-
-export interface EmployeeOption {
-  id: number;
-  name: string;
 }
 
 export interface EmployeeFilterOptions {

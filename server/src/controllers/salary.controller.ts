@@ -61,8 +61,11 @@ export class SalaryController {
       }
 
       if (parsedQuery.effectiveFrom !== undefined) {
-        query.effectiveFrom =
-          parsedQuery.effectiveFrom;
+        query.effectiveFrom = parsedQuery.effectiveFrom;
+      }
+
+      if (parsedQuery.effectiveTo !== undefined) {
+        query.effectiveTo = parsedQuery.effectiveTo;
       }
 
       if (parsedQuery.search !== undefined) {
