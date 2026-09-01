@@ -18,7 +18,7 @@ interface ApiResponse<T> {
 export const employeeApi = {
   async getById(employeeId: number): Promise<EmployeeDetails> {
     const response = await apiClient.get<ApiResponse<EmployeeDetails>>(
-      `/api/v1/employees/${employeeId}`,
+      `/employees/${employeeId}`,
     );
 
     return response.data.data;
@@ -26,7 +26,7 @@ export const employeeApi = {
 
   async getAll(query: EmployeeListQuery): Promise<EmployeeListResponse> {
     const response = await apiClient.get<ApiResponse<EmployeeListResponse>>(
-      '/api/v1/employees',
+      '/employees',
       {
         params: query,
       },
@@ -37,7 +37,7 @@ export const employeeApi = {
 
   async getFilterOptions(): Promise<EmployeeFilterOptions> {
     const response = await apiClient.get<ApiResponse<EmployeeFilterOptions>>(
-      '/api/v1/employees/filter-options',
+      '/employees/filter-options',
     );
 
     return response.data.data;

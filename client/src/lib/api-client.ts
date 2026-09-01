@@ -1,12 +1,8 @@
 // client/src/lib/api-client.ts
 
-import axios, {
-  AxiosError,
-  type AxiosInstance,
-  type InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/+$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_URL?.trim() || '/api/v1').replace(/\/+$/, '');
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -35,3 +31,4 @@ apiClient.interceptors.response.use(
 );
 
 export { apiClient };
+

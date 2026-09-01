@@ -4,7 +4,7 @@ import type { EmployeeListQuery, EmployeeListResponse, EmployeeOption } from '..
 
 const API_BASE_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '') ?? '';
 
-const EMPLOYEES_ENDPOINT = `${API_BASE_URL}/api/v1/employees`;
+const EMPLOYEES_ENDPOINT = `${API_BASE_URL}/employees`;
 
 class EmployeesApiError extends Error {
   readonly status: number;
@@ -84,7 +84,7 @@ async function getEmployees(
 }
 
 async function getCountries(signal?: AbortSignal): Promise<EmployeeOption[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/countries`, {
+  const response = await fetch(`${API_BASE_URL}/countries`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -96,7 +96,7 @@ async function getCountries(signal?: AbortSignal): Promise<EmployeeOption[]> {
 }
 
 async function getDepartments(signal?: AbortSignal): Promise<EmployeeOption[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/departments`, {
+  const response = await fetch(`${API_BASE_URL}/departments`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -108,7 +108,7 @@ async function getDepartments(signal?: AbortSignal): Promise<EmployeeOption[]> {
 }
 
 async function getRoles(signal?: AbortSignal): Promise<EmployeeOption[]> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/roles`, {
+  const response = await fetch(`${API_BASE_URL}/roles`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

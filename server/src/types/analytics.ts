@@ -91,3 +91,26 @@ export interface AnalyticsResponse<T> {
     generatedAt: string;
   };
 }
+
+export interface AnalyticsQueryFilters {
+  countryCode: string;
+  department: string;
+  role: string;
+  currency: string;
+}
+
+export interface AnalyticsData {
+  overview: AnalyticsOverview;
+  distribution: SalaryDistribution;
+  countries: CountryAnalytics;
+  departments: DepartmentAnalytics;
+  roles: RoleAnalytics;
+  generatedAt: string;
+}
+
+export interface AnalyticsState {
+  data: AnalyticsData | null;
+  loading: boolean;
+  refreshing: boolean;
+  error: string | null;
+}
