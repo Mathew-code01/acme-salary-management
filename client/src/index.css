@@ -1,66 +1,196 @@
-/* client/src/index.css */
-
 @import "tailwindcss";
 
-/* -------------------------------------------------------
-   ACME Salary Management
-   Global Design Tokens
-------------------------------------------------------- */
+/* =========================================================
+   ACME SALARY MANAGEMENT
+   Enterprise Design System
+   ========================================================= */
 
 :root {
   color-scheme: light;
+
+  /* -------------------------------------------------------
+     Brand
+     ------------------------------------------------------- */
 
   --acme-brand: #4f46e5;
   --acme-brand-hover: #4338ca;
   --acme-brand-light: #eef2ff;
   --acme-brand-ring: rgba(79, 70, 229, 0.2);
 
+  /* -------------------------------------------------------
+     Surfaces
+     ------------------------------------------------------- */
+
   --acme-background: #f8fafc;
   --acme-surface: #ffffff;
+  --acme-surface-subtle: #f8fafc;
   --acme-surface-muted: #f1f5f9;
+  --acme-surface-elevated: #ffffff;
+
+  /* -------------------------------------------------------
+     Typography
+     ------------------------------------------------------- */
 
   --acme-text: #0f172a;
+  --acme-text-secondary: #334155;
   --acme-text-muted: #64748b;
+  --acme-text-subtle: #94a3b8;
+
+  /* -------------------------------------------------------
+     Borders
+     ------------------------------------------------------- */
 
   --acme-border: #e2e8f0;
+  --acme-border-strong: #cbd5e1;
 
-  --acme-success: #16a34a;
+  /* -------------------------------------------------------
+     Semantic
+     ------------------------------------------------------- */
+
+  --acme-success: #059669;
+  --acme-success-light: #ecfdf5;
+
   --acme-warning: #d97706;
+  --acme-warning-light: #fffbeb;
+
   --acme-danger: #dc2626;
+  --acme-danger-light: #fef2f2;
+
   --acme-info: #0284c7;
+  --acme-info-light: #f0f9ff;
+
+  /* -------------------------------------------------------
+     Charts
+     ------------------------------------------------------- */
+
+  --acme-chart-primary: #4f46e5;
+  --acme-chart-secondary: #0ea5e9;
+  --acme-chart-success: #059669;
+  --acme-chart-warning: #d97706;
+
+  /* -------------------------------------------------------
+     Radius
+     ------------------------------------------------------- */
+
+  --acme-radius: 0.75rem;
 }
 
 .dark {
   color-scheme: dark;
 
+  /* -------------------------------------------------------
+     Brand
+     ------------------------------------------------------- */
+
   --acme-brand: #818cf8;
-  --acme-brand-hover: #6366f1;
+  --acme-brand-hover: #a5b4fc;
   --acme-brand-light: rgba(99, 102, 241, 0.12);
-  --acme-brand-ring: rgba(129, 140, 248, 0.25);
+  --acme-brand-ring: rgba(129, 140, 248, 0.28);
+
+  /* -------------------------------------------------------
+     Surfaces
+     ------------------------------------------------------- */
 
   --acme-background: #020617;
   --acme-surface: #0f172a;
+  --acme-surface-subtle: #0b1120;
   --acme-surface-muted: #1e293b;
+  --acme-surface-elevated: #111c32;
+
+  /* -------------------------------------------------------
+     Typography
+     ------------------------------------------------------- */
 
   --acme-text: #f8fafc;
+  --acme-text-secondary: #e2e8f0;
   --acme-text-muted: #94a3b8;
+  --acme-text-subtle: #64748b;
 
-  --acme-border: #334155;
+  /* -------------------------------------------------------
+     Borders
+     ------------------------------------------------------- */
 
-  --acme-success: #4ade80;
+  --acme-border: #1e293b;
+  --acme-border-strong: #334155;
+
+  /* -------------------------------------------------------
+     Semantic
+     ------------------------------------------------------- */
+
+  --acme-success: #34d399;
+  --acme-success-light: rgba(16, 185, 129, 0.1);
+
   --acme-warning: #fbbf24;
+  --acme-warning-light: rgba(245, 158, 11, 0.1);
+
   --acme-danger: #f87171;
+  --acme-danger-light: rgba(239, 68, 68, 0.1);
+
   --acme-info: #38bdf8;
+  --acme-info-light: rgba(14, 165, 233, 0.1);
+
+  /* -------------------------------------------------------
+     Charts
+     ------------------------------------------------------- */
+
+  --acme-chart-primary: #818cf8;
+  --acme-chart-secondary: #38bdf8;
+  --acme-chart-success: #34d399;
+  --acme-chart-warning: #fbbf24;
 }
 
-/* -------------------------------------------------------
+/* =========================================================
+   Tailwind v4 semantic theme mapping
+   ========================================================= */
+
+@theme inline {
+  --color-background: var(--acme-background);
+  --color-foreground: var(--acme-text);
+
+  --color-card: var(--acme-surface);
+  --color-card-foreground: var(--acme-text);
+
+  --color-popover: var(--acme-surface);
+  --color-popover-foreground: var(--acme-text);
+
+  --color-primary: var(--acme-brand);
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: var(--acme-surface-muted);
+  --color-secondary-foreground: var(--acme-text-secondary);
+
+  --color-muted: var(--acme-surface-muted);
+  --color-muted-foreground: var(--acme-text-muted);
+
+  --color-accent: var(--acme-brand-light);
+  --color-accent-foreground: var(--acme-brand);
+
+  --color-destructive: var(--acme-danger);
+  --color-destructive-foreground: #ffffff;
+
+  --color-border: var(--acme-border);
+  --color-input: var(--acme-border);
+  --color-ring: var(--acme-brand);
+
+  --color-success: var(--acme-success);
+  --color-warning: var(--acme-warning);
+  --color-info: var(--acme-info);
+
+  --radius-sm: calc(var(--acme-radius) - 0.25rem);
+  --radius-md: calc(var(--acme-radius) - 0.125rem);
+  --radius-lg: var(--acme-radius);
+  --radius-xl: calc(var(--acme-radius) + 0.25rem);
+}
+
+/* =========================================================
    Base
-------------------------------------------------------- */
+   ========================================================= */
 
 html {
   min-width: 320px;
   min-height: 100%;
   background: var(--acme-background);
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -68,7 +198,14 @@ body {
   min-height: 100vh;
   margin: 0;
 
-  background: var(--acme-background);
+  background:
+    radial-gradient(
+      circle at 80% -10%,
+      rgba(79, 70, 229, 0.055),
+      transparent 30rem
+    ),
+    var(--acme-background);
+
   color: var(--acme-text);
 
   font-family:
@@ -80,17 +217,33 @@ body {
     "Segoe UI",
     sans-serif;
 
+  font-feature-settings:
+    "cv02",
+    "cv03",
+    "cv04",
+    "cv11";
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.dark body {
+  background:
+    radial-gradient(
+      circle at 80% -10%,
+      rgba(99, 102, 241, 0.08),
+      transparent 32rem
+    ),
+    var(--acme-background);
 }
 
 #root {
   min-height: 100vh;
 }
 
-/* -------------------------------------------------------
+/* =========================================================
    Form controls
-------------------------------------------------------- */
+   ========================================================= */
 
 button,
 input,
@@ -107,18 +260,18 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* -------------------------------------------------------
+/* =========================================================
    Selection
-------------------------------------------------------- */
+   ========================================================= */
 
 ::selection {
   background: var(--acme-brand-light);
   color: var(--acme-text);
 }
 
-/* -------------------------------------------------------
+/* =========================================================
    Scrollbar
-------------------------------------------------------- */
+   ========================================================= */
 
 * {
   scrollbar-width: thin;
@@ -126,14 +279,54 @@ button:disabled {
 }
 
 .dark * {
-  scrollbar-color: #475569 transparent;
+  scrollbar-color: #334155 transparent;
 }
 
-/* -------------------------------------------------------
+/* =========================================================
    Focus
-------------------------------------------------------- */
+   ========================================================= */
 
 :focus-visible {
   outline: 2px solid var(--acme-brand);
-  outline-offset: 2px;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   Mobile safety
+   ========================================================= */
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+table {
+  max-width: 100%;
+}
+
+@media (max-width: 479px) {
+  body {
+    font-size: 0.9375rem;
+  }
+
+  button {
+    min-height: 40px;
+  }
+}
+
+/* =========================================================
+   Reduced motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

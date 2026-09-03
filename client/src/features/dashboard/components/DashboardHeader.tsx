@@ -1,6 +1,5 @@
 // client/src/features/dashboard/components/DashboardHeader.tsx
-
-import { RefreshCw, Activity } from 'lucide-react';
+import { Activity, CalendarClock, RefreshCw, ShieldCheck } from 'lucide-react';
 
 import { PageHeader } from '../../../components/layout/PageHeader';
 
@@ -30,19 +29,35 @@ export function DashboardHeader({
   return (
     <PageHeader
       title="Compensation Dashboard"
-      description="Monitor workforce compensation, payroll distribution, and salary trends across your organization."
+      description="A real-time view of workforce compensation, payroll distribution, and salary intelligence."
       actions={
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="hidden items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground md:flex">
-            <Activity className="h-3.5 w-3.5" />
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 shadow-sm">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <ShieldCheck className="h-4 w-4" />
+            </span>
 
-            <span>{hasFilters ? 'Filtered analytics' : 'Organization-wide analytics'}</span>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-foreground">
+                {hasFilters ? 'Filtered view' : 'Organization-wide'}
+              </p>
+
+              <p className="truncate text-[11px] text-muted-foreground">Compensation analytics</p>
+            </div>
           </div>
 
           {generatedAt ? (
-            <span className="hidden text-xs text-muted-foreground lg:inline">
-              Updated {formatDateTime(generatedAt)}
-            </span>
+            <div className="hidden items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 shadow-sm lg:flex">
+              <CalendarClock className="h-4 w-4 shrink-0 text-muted-foreground" />
+
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+                  Last updated
+                </p>
+
+                <p className="text-xs font-medium text-foreground">{formatDateTime(generatedAt)}</p>
+              </div>
+            </div>
           ) : null}
 
           {onRefresh ? (
@@ -50,12 +65,12 @@ export function DashboardHeader({
               type="button"
               onClick={onRefresh}
               disabled={isRefreshing}
-              aria-label="Refresh dashboard"
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+              aria-label="Refresh dashboard analytics"
+              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
             >
               <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
 
-              <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+              <span>{isRefreshing ? 'Refreshing…' : 'Refresh data'}</span>
             </button>
           ) : null}
         </div>
