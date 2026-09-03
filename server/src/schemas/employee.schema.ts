@@ -2,107 +2,107 @@
 
 import { z } from 'zod';
 
-const employeeCodeSchema = z
-  .string()
-  .trim()
-  .min(2, 'Employee code must contain at least 2 characters.')
-  .max(50, 'Employee code must not exceed 50 characters.')
-  .regex(
-    /^[A-Za-z0-9_-]+$/,
-    'Employee code may only contain letters, numbers, underscores, and hyphens.',
-  );
+/**
+ * Positive integer query parameter.
+ *
+ * HTTP query parameters are strings, so z.coerce.number()
+ * converts values such as "25" into 25 before the value
+ * reaches the application layer.
+ */
+const positiveInteger = z.coerce.number().int().positive();
 
-const nameSchema = z
-  .string()
-  .trim()
-  .min(1, 'Name is required.')
-  .max(100, 'Name must not exceed 100 characters.');
+/**
+ * Optional nullable relation ID.
+ */
+const optionalRelationId = z
+  .union([positiveInteger, z.literal(''), z.null()])
+  .optional()
+  .transform((value) => {
+    if (value === '' || value === null || value === undefined) {
+      return undefined;
+    }
 
-const emailSchema = z
-  .string()
-  .trim()
-  .toLowerCase()
-  .email('A valid email address is required.')
-  .max(255, 'Email must not exceed 255 characters.');
+    return value;
+  });
 
-const positiveIntegerSchema = z.coerce
-  .number()
-  .int('Value must be an integer.')
-  .positive('Value must be greater than zero.');
-
+/**
+ * Employee ID parameter.
+ */
 export const employeeIdParamSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, 'Employee ID must be a positive integer.')
-    .transform(Number)
-    .refine((value) => value > 0, {
-      message: 'Employee ID must be greater than zero.',
-    }),
+  id: positiveInteger,
 });
 
+/**
+ * Employee list query.
+ */
 export const employeeListQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
+  search: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => {
+      if (!value) {
+        return undefined;
+      }
 
-  pageSize: z.coerce.number().int().min(1).max(100).default(25),
+      return value.replace(/\s+/g, ' ');
+    }),
 
-  search: z.string().trim().max(100).optional(),
+  countryId: optionalRelationId,
 
-  countryId: positiveIntegerSchema.optional(),
+  departmentId: optionalRelationId,
 
-  departmentId: positiveIntegerSchema.optional(),
+  roleId: optionalRelationId,
 
-  roleId: positiveIntegerSchema.optional(),
+  page: positiveInteger.default(1),
+
+  pageSize: positiveInteger.max(100).default(25),
 
   sortBy: z
-    .enum(['employeeCode', 'firstName', 'lastName', 'email', 'createdAt'])
+    .enum(['id', 'employeeCode', 'firstName', 'lastName', 'email', 'createdAt', 'updatedAt'])
     .default('createdAt'),
 
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
-export const createEmployeeSchema = z
-  .object({
-    employeeCode: employeeCodeSchema,
+/**
+ * Create employee request.
+ */
+export const createEmployeeSchema = z.object({
+  employeeCode: z.string().trim().min(1).max(50),
 
-    firstName: nameSchema,
+  firstName: z.string().trim().min(1).max(100),
 
-    lastName: nameSchema,
+  lastName: z.string().trim().min(1).max(100),
 
-    email: emailSchema,
+  email: z.string().trim().email().max(255),
 
-    countryId: positiveIntegerSchema,
+  countryId: positiveInteger,
 
-    departmentId: positiveIntegerSchema,
+  departmentId: positiveInteger,
 
-    roleId: positiveIntegerSchema,
-  })
-  .strict();
+  roleId: positiveInteger,
+});
 
+/**
+ * Update employee request.
+ */
 export const updateEmployeeSchema = z
   .object({
-    employeeCode: employeeCodeSchema.optional(),
+    employeeCode: z.string().trim().min(1).max(50).optional(),
 
-    firstName: nameSchema.optional(),
+    firstName: z.string().trim().min(1).max(100).optional(),
 
-    lastName: nameSchema.optional(),
+    lastName: z.string().trim().min(1).max(100).optional(),
 
-    email: emailSchema.optional(),
+    email: z.string().trim().email().max(255).optional(),
 
-    countryId: positiveIntegerSchema.optional(),
+    countryId: positiveInteger.optional(),
 
-    departmentId: positiveIntegerSchema.optional(),
+    departmentId: positiveInteger.optional(),
 
-    roleId: positiveIntegerSchema.optional(),
+    roleId: positiveInteger.optional(),
   })
-  .strict()
   .refine((value) => Object.keys(value).length > 0, {
     message: 'At least one employee field must be provided.',
   });
-
-export type EmployeeIdParams = z.infer<typeof employeeIdParamSchema>;
-
-export type EmployeeListQueryInput = z.infer<typeof employeeListQuerySchema>;
-
-export type CreateEmployeeInput = z.infer<typeof createEmployeeSchema>;
-
-export type UpdateEmployeeInput = z.infer<typeof updateEmployeeSchema>;
