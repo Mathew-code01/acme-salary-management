@@ -1,4 +1,3 @@
-
 // client/src/features/employees/types/employee.ts
 
 import type { Salary } from '../../salary/types/salary';

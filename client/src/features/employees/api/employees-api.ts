@@ -1,122 +1,196 @@
 // client/src/features/employees/api/employees-api.ts
 
-import type { EmployeeListQuery, EmployeeListResponse, EmployeeOption } from '../types/employee';
+import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '') ?? '';
+import { apiClient } from '../../../lib/api-client';
 
-const EMPLOYEES_ENDPOINT = `${API_BASE_URL}/employees`;
+import type {
+  EmployeeFilterOptions,
+  EmployeeListQuery,
+  EmployeeListResponse,
+} from '../types/employee';
 
-class EmployeesApiError extends Error {
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
+export class EmployeesApiError extends Error {
   readonly status: number;
+  readonly details: unknown;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status = 0, details?: unknown) {
     super(message);
+
     this.name = 'EmployeesApiError';
     this.status = status;
+    this.details = details;
+
+    Object.setPrototypeOf(this, EmployeesApiError.prototype);
   }
 }
 
-async function parseResponse<T>(response: Response): Promise<T> {
-  if (response.ok) {
-    return response.json() as Promise<T>;
+/**
+ * Extract a useful API error message without exposing
+ * implementation details to the UI.
+ */
+function extractApiErrorMessage(value: unknown): string | null {
+  if (typeof value !== 'object' || value === null) {
+    return null;
   }
 
-  let message = 'Unable to complete the employee request.';
-
-  try {
-    const body: unknown = await response.json();
-
-    if (
-      typeof body === 'object' &&
-      body !== null &&
-      'message' in body &&
-      typeof body.message === 'string'
-    ) {
-      message = body.message;
-    }
-  } catch {
-    // Ignore invalid/non-JSON error responses.
+  if (
+    'error' in value &&
+    typeof value.error === 'object' &&
+    value.error !== null &&
+    'message' in value.error &&
+    typeof value.error.message === 'string'
+  ) {
+    return value.error.message;
   }
 
-  throw new EmployeesApiError(message, response.status);
+  if ('error' in value && typeof value.error === 'string') {
+    return value.error;
+  }
+
+  if ('message' in value && typeof value.message === 'string') {
+    return value.message;
+  }
+
+  return null;
 }
 
-function buildQueryString(query: EmployeeListQuery): string {
-  const params = new URLSearchParams();
+/**
+ * Converts any API-layer failure into a predictable
+ * EmployeesApiError.
+ */
+function normalizeError(error: unknown): EmployeesApiError {
+  if (axios.isAxiosError(error)) {
+    const message =
+      extractApiErrorMessage(error.response?.data) ??
+      error.message ??
+      'Unable to complete the employee request.';
 
-  if (query.search) {
-    params.set('search', query.search);
+    return new EmployeesApiError(message, error.response?.status ?? 0, error.response?.data);
   }
 
-  if (query.countryId !== null) {
-    params.set('countryId', String(query.countryId));
+  if (error instanceof EmployeesApiError) {
+    return error;
   }
 
-  if (query.departmentId !== null) {
-    params.set('departmentId', String(query.departmentId));
+  if (error instanceof Error) {
+    return new EmployeesApiError(error.message, 0, error);
   }
 
-  if (query.roleId !== null) {
-    params.set('roleId', String(query.roleId));
-  }
-
-  params.set('page', String(query.page));
-  params.set('pageSize', String(query.pageSize));
-
-  return params.toString();
+  return new EmployeesApiError('Unable to complete the employee request.', 0, error);
 }
 
+/**
+ * Ensures that the API response actually contains
+ * the expected data envelope.
+ */
+function unwrapResponse<T>(response: ApiResponse<T>): T {
+  if (!response || response.success !== true) {
+    throw new EmployeesApiError(
+      response?.message ?? 'The employee service returned an invalid response.',
+    );
+  }
+
+  return response.data;
+}
+
+/**
+ * Get paginated employees.
+ */
 async function getEmployees(
   query: EmployeeListQuery,
   signal?: AbortSignal,
 ): Promise<EmployeeListResponse> {
-  const queryString = buildQueryString(query);
+  try {
+    const response = await apiClient.get<ApiResponse<EmployeeListResponse>>('/employees', {
+      params: {
+        search: query.search || undefined,
+        countryId: query.countryId ?? undefined,
+        departmentId: query.departmentId ?? undefined,
+        roleId: query.roleId ?? undefined,
+        page: query.page,
+        pageSize: query.pageSize,
+      },
+      signal,
+    });
 
-  const response = await fetch(`${EMPLOYEES_ENDPOINT}?${queryString}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-    signal,
-  });
+    return unwrapResponse(response.data);
+  } catch (error: unknown) {
+    if (signal?.aborted || axios.isCancel(error)) {
+      throw error;
+    }
 
-  return parseResponse<EmployeeListResponse>(response);
+    throw normalizeError(error);
+  }
 }
 
-async function getCountries(signal?: AbortSignal): Promise<EmployeeOption[]> {
-  const response = await fetch(`${API_BASE_URL}/countries`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-    signal,
-  });
+/**
+ * Get country filter options.
+ */
+async function getCountries(signal?: AbortSignal): Promise<EmployeeFilterOptions['countries']> {
+  try {
+    const response = await apiClient.get<ApiResponse<EmployeeFilterOptions['countries']>>(
+      '/countries',
+      {
+        signal,
+      },
+    );
 
-  return parseResponse<EmployeeOption[]>(response);
+    return unwrapResponse(response.data);
+  } catch (error: unknown) {
+    if (signal?.aborted || axios.isCancel(error)) {
+      throw error;
+    }
+
+    throw normalizeError(error);
+  }
 }
 
-async function getDepartments(signal?: AbortSignal): Promise<EmployeeOption[]> {
-  const response = await fetch(`${API_BASE_URL}/departments`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-    signal,
-  });
+/**
+ * Get department filter options.
+ */
+async function getDepartments(signal?: AbortSignal): Promise<EmployeeFilterOptions['departments']> {
+  try {
+    const response = await apiClient.get<ApiResponse<EmployeeFilterOptions['departments']>>(
+      '/departments',
+      {
+        signal,
+      },
+    );
 
-  return parseResponse<EmployeeOption[]>(response);
+    return unwrapResponse(response.data);
+  } catch (error: unknown) {
+    if (signal?.aborted || axios.isCancel(error)) {
+      throw error;
+    }
+
+    throw normalizeError(error);
+  }
 }
 
-async function getRoles(signal?: AbortSignal): Promise<EmployeeOption[]> {
-  const response = await fetch(`${API_BASE_URL}/roles`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-    signal,
-  });
+/**
+ * Get role filter options.
+ */
+async function getRoles(signal?: AbortSignal): Promise<EmployeeFilterOptions['roles']> {
+  try {
+    const response = await apiClient.get<ApiResponse<EmployeeFilterOptions['roles']>>('/roles', {
+      signal,
+    });
 
-  return parseResponse<EmployeeOption[]>(response);
+    return unwrapResponse(response.data);
+  } catch (error: unknown) {
+    if (signal?.aborted || axios.isCancel(error)) {
+      throw error;
+    }
+
+    throw normalizeError(error);
+  }
 }
 
 export const employeesApi = {
@@ -125,5 +199,3 @@ export const employeesApi = {
   getDepartments,
   getRoles,
 };
-
-export { EmployeesApiError };

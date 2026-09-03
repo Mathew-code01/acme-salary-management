@@ -26,14 +26,9 @@ export class SalaryController {
   /**
    * GET /api/salaries
    */
-  async list(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const parsedQuery =
-        salaryListQuerySchema.parse(req.query);
+      const parsedQuery = salaryListQuerySchema.parse(req.query);
 
       const query: SalaryListQuery = {
         page: parsedQuery.page,
@@ -51,13 +46,11 @@ export class SalaryController {
       }
 
       if (parsedQuery.minAmountCents !== undefined) {
-        query.minAmountCents =
-          parsedQuery.minAmountCents;
+        query.minAmountCents = parsedQuery.minAmountCents;
       }
 
       if (parsedQuery.maxAmountCents !== undefined) {
-        query.maxAmountCents =
-          parsedQuery.maxAmountCents;
+        query.maxAmountCents = parsedQuery.maxAmountCents;
       }
 
       if (parsedQuery.effectiveFrom !== undefined) {
@@ -86,17 +79,33 @@ export class SalaryController {
   /**
    * GET /api/salaries/:id
    */
-  async getById(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } =
-        salaryIdParamSchema.parse(req.params);
+      const { id } = salaryIdParamSchema.parse(req.params);
 
-      const salary =
-        await salaryService.getById(id);
+      const salary = await salaryService.getById(id);
+
+      res.status(200).json({
+        success: true,
+        data: salary,
+      });
+    } catch (error: unknown) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /api/v1/salaries/employee/:employeeId
+   *
+   * Returns the salary record associated with an employee.
+   */
+  async getByEmployeeId(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = salaryIdParamSchema.parse({
+        id: req.params.employeeId,
+      });
+
+      const salary = await salaryService.getByEmployeeId(id);
 
       res.status(200).json({
         success: true,
@@ -110,14 +119,9 @@ export class SalaryController {
   /**
    * POST /api/salaries
    */
-  async create(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const parsedInput =
-        createSalarySchema.parse(req.body);
+      const parsedInput = createSalarySchema.parse(req.body);
 
       const input: CreateSalaryInput = {
         employeeId: parsedInput.employeeId,
@@ -126,8 +130,7 @@ export class SalaryController {
         effectiveFrom: parsedInput.effectiveFrom,
       };
 
-      const salary =
-        await salaryService.create(input);
+      const salary = await salaryService.create(input);
 
       res.status(201).json({
         success: true,
@@ -141,37 +144,27 @@ export class SalaryController {
   /**
    * PATCH /api/salaries/:id
    */
-  async update(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } =
-        salaryIdParamSchema.parse(req.params);
+      const { id } = salaryIdParamSchema.parse(req.params);
 
-      const parsedInput =
-        updateSalarySchema.parse(req.body);
+      const parsedInput = updateSalarySchema.parse(req.body);
 
       const input: UpdateSalaryInput = {};
 
       if (parsedInput.amountCents !== undefined) {
-        input.amountCents =
-          parsedInput.amountCents;
+        input.amountCents = parsedInput.amountCents;
       }
 
       if (parsedInput.currency !== undefined) {
-        input.currency =
-          parsedInput.currency;
+        input.currency = parsedInput.currency;
       }
 
       if (parsedInput.effectiveFrom !== undefined) {
-        input.effectiveFrom =
-          parsedInput.effectiveFrom;
+        input.effectiveFrom = parsedInput.effectiveFrom;
       }
 
-      const salary =
-        await salaryService.update(id, input);
+      const salary = await salaryService.update(id, input);
 
       res.status(200).json({
         success: true,
@@ -185,17 +178,11 @@ export class SalaryController {
   /**
    * DELETE /api/salaries/:id
    */
-  async delete(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } =
-        salaryIdParamSchema.parse(req.params);
+      const { id } = salaryIdParamSchema.parse(req.params);
 
-      const result =
-        await salaryService.delete(id);
+      const result = await salaryService.delete(id);
 
       res.status(200).json({
         success: true,

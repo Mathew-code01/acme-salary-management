@@ -1,4 +1,10 @@
 // client/src/features/dashboard/api/dashboard-api.ts
+// client/src/features/dashboard/api/dashboard-api.ts
+
+
+// client/src/features/dashboard/api/dashboard-api.ts
+
+import axios from 'axios';
 
 import type {
   AnalyticsOverview,
@@ -9,38 +15,64 @@ import type {
   SalaryDistribution,
 } from '../types/dashboard';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL?.trim() || '/api/v1').replace(/\/+$/, '');
+import { apiClient } from '../../../lib/api-client';
 
-class DashboardApiError extends Error {
+export class DashboardApiError extends Error {
   readonly status: number;
+
   readonly details: unknown;
 
-  constructor(message: string, status: number, details?: unknown) {
+  constructor(
+    message: string,
+    status: number,
+    details?: unknown,
+  ) {
     super(message);
 
     this.name = 'DashboardApiError';
+
     this.status = status;
+
     this.details = details;
+
+    Object.setPrototypeOf(
+      this,
+      DashboardApiError.prototype,
+    );
   }
 }
 
-function buildQueryString(filters: DashboardFilters = {}): string {
+function buildQueryString(
+  filters: DashboardFilters = {},
+): string {
   const params = new URLSearchParams();
 
   if (filters.countryCode) {
-    params.set('countryCode', filters.countryCode);
+    params.set(
+      'countryCode',
+      filters.countryCode,
+    );
   }
 
   if (filters.department) {
-    params.set('department', filters.department);
+    params.set(
+      'department',
+      filters.department,
+    );
   }
 
   if (filters.role) {
-    params.set('role', filters.role);
+    params.set(
+      'role',
+      filters.role,
+    );
   }
 
   if (filters.currency) {
-    params.set('currency', filters.currency);
+    params.set(
+      'currency',
+      filters.currency,
+    );
   }
 
   const query = params.toString();
@@ -48,47 +80,105 @@ function buildQueryString(filters: DashboardFilters = {}): string {
   return query ? `?${query}` : '';
 }
 
-async function request<T>(path: string, signal?: AbortSignal): Promise<T> {
-  let response: Response;
+function extractApiErrorMessage(
+  responseData: unknown,
+): string | null {
+  if (
+    typeof responseData !== 'object' ||
+    responseData === null
+  ) {
+    return null;
+  }
 
-  try {
-    response = await fetch(`${API_BASE_URL}${path}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-      credentials: 'include',
-      signal,
-    });
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw error;
+  if (
+    'error' in responseData &&
+    typeof responseData.error === 'object' &&
+    responseData.error !== null &&
+    'message' in responseData.error &&
+    typeof responseData.error.message === 'string'
+  ) {
+    return responseData.error.message;
+  }
+
+  if (
+    'message' in responseData &&
+    typeof responseData.message === 'string'
+  ) {
+    return responseData.message;
+  }
+
+  return null;
+}
+
+function getErrorMessage(
+  error: unknown,
+  fallback: string,
+): string {
+  if (axios.isAxiosError(error)) {
+    const apiMessage = extractApiErrorMessage(
+      error.response?.data,
+    );
+
+    if (apiMessage) {
+      return apiMessage;
     }
 
-    throw new DashboardApiError('Unable to connect to the analytics service.', 0, error);
+    if (error.message) {
+      return error.message;
+    }
   }
 
-  let body: unknown = null;
+  if (
+    error instanceof Error &&
+    error.message
+  ) {
+    return error.message;
+  }
 
+  return fallback;
+}
+
+async function request<T>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<T> {
   try {
-    body = await response.json();
-  } catch {
-    body = null;
+    const response = await apiClient.get<T>(
+      path,
+      {
+        signal,
+      },
+    );
+
+    return response.data;
+  } catch (error: unknown) {
+    if (signal?.aborted) {
+      throw new DOMException(
+        'The request was aborted.',
+        'AbortError',
+      );
+    }
+
+    if (axios.isAxiosError(error)) {
+      throw new DashboardApiError(
+        getErrorMessage(
+          error,
+          'Unable to connect to the analytics service.',
+        ),
+        error.response?.status ?? 0,
+        error.response?.data,
+      );
+    }
+
+    throw new DashboardApiError(
+      getErrorMessage(
+        error,
+        'Unable to connect to the analytics service.',
+      ),
+      0,
+      error,
+    );
   }
-
-  if (!response.ok) {
-    const message =
-      typeof body === 'object' &&
-      body !== null &&
-      'message' in body &&
-      typeof body.message === 'string'
-        ? body.message
-        : `Analytics request failed with status ${response.status}.`;
-
-    throw new DashboardApiError(message, response.status, body);
-  }
-
-  return body as T;
 }
 
 export const dashboardApi = {
@@ -96,10 +186,13 @@ export const dashboardApi = {
     filters: DashboardFilters = {},
     signal?: AbortSignal,
   ): Promise<AnalyticsOverview> {
-    const response = await request<AnalyticsResponse<AnalyticsOverview>>(
-      `/analytics/overview${buildQueryString(filters)}`,
-      signal,
-    );
+    const response =
+      await request<
+        AnalyticsResponse<AnalyticsOverview>
+      >(
+        `/analytics/overview${buildQueryString(filters)}`,
+        signal,
+      );
 
     return response.data;
   },
@@ -108,10 +201,13 @@ export const dashboardApi = {
     filters: DashboardFilters = {},
     signal?: AbortSignal,
   ): Promise<SalaryDistribution> {
-    const response = await request<AnalyticsResponse<SalaryDistribution>>(
-      `/analytics/distribution${buildQueryString(filters)}`,
-      signal,
-    );
+    const response =
+      await request<
+        AnalyticsResponse<SalaryDistribution>
+      >(
+        `/analytics/distribution${buildQueryString(filters)}`,
+        signal,
+      );
 
     return response.data;
   },
@@ -120,10 +216,13 @@ export const dashboardApi = {
     filters: DashboardFilters = {},
     signal?: AbortSignal,
   ): Promise<CountryAnalytics> {
-    const response = await request<AnalyticsResponse<CountryAnalytics>>(
-      `/analytics/countries${buildQueryString(filters)}`,
-      signal,
-    );
+    const response =
+      await request<
+        AnalyticsResponse<CountryAnalytics>
+      >(
+        `/analytics/countries${buildQueryString(filters)}`,
+        signal,
+      );
 
     return response.data;
   },
@@ -132,13 +231,14 @@ export const dashboardApi = {
     filters: DashboardFilters = {},
     signal?: AbortSignal,
   ): Promise<DepartmentAnalytics> {
-    const response = await request<AnalyticsResponse<DepartmentAnalytics>>(
-      `/analytics/departments${buildQueryString(filters)}`,
-      signal,
-    );
+    const response =
+      await request<
+        AnalyticsResponse<DepartmentAnalytics>
+      >(
+        `/analytics/departments${buildQueryString(filters)}`,
+        signal,
+      );
 
     return response.data;
   },
 };
-
-export { DashboardApiError };

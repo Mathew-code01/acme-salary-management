@@ -1,7 +1,5 @@
 // server/src/server.ts
 
-import 'dotenv/config';
-
 import { createServer } from 'node:http';
 
 import { app } from './app.js';
@@ -14,6 +12,19 @@ const httpServer = createServer(app);
 let isShuttingDown = false;
 
 function startServer(): void {
+  httpServer.once('error', (error) => {
+    logger.fatal(
+      {
+        err: error,
+        host: env.host,
+        port: env.port,
+      },
+      'HTTP server failed to start',
+    );
+
+    process.exit(1);
+  });
+
   httpServer.listen(env.port, env.host, () => {
     logger.info(
       {
@@ -28,6 +39,11 @@ function startServer(): void {
 
 function closeServer(): Promise<void> {
   return new Promise((resolve, reject) => {
+    if (!httpServer.listening) {
+      resolve();
+      return;
+    }
+
     httpServer.close((error) => {
       if (error) {
         reject(error);

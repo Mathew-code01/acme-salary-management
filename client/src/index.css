@@ -1,86 +1,66 @@
-/* client/src/style.css */
+/* client/src/index.css */
 
 @import "tailwindcss";
+
+/* -------------------------------------------------------
+   ACME Salary Management
+   Global Design Tokens
+------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
+  --acme-brand: #4f46e5;
+  --acme-brand-hover: #4338ca;
+  --acme-brand-light: #eef2ff;
+  --acme-brand-ring: rgba(79, 70, 229, 0.2);
 
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --acme-background: #f8fafc;
+  --acme-surface: #ffffff;
+  --acme-surface-muted: #f1f5f9;
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
+  --acme-text: #0f172a;
+  --acme-text-muted: #64748b;
 
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
+  --acme-border: #e2e8f0;
 
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222 47% 11%;
-
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-
-  --accent: 210 40% 96%;
-  --accent-foreground: 222 47% 11%;
-
-  --destructive: 0 72% 51%;
-  --destructive-foreground: 210 40% 98%;
-
-  --success: 142 71% 35%;
-  --warning: 38 92% 45%;
-
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 53%;
-
-  --radius: 0.625rem;
+  --acme-success: #16a34a;
+  --acme-warning: #d97706;
+  --acme-danger: #dc2626;
+  --acme-info: #0284c7;
 }
 
 .dark {
   color-scheme: dark;
 
-  --background: 222 47% 7%;
-  --foreground: 210 40% 98%;
+  --acme-brand: #818cf8;
+  --acme-brand-hover: #6366f1;
+  --acme-brand-light: rgba(99, 102, 241, 0.12);
+  --acme-brand-ring: rgba(129, 140, 248, 0.25);
 
-  --card: 222 47% 10%;
-  --card-foreground: 210 40% 98%;
+  --acme-background: #020617;
+  --acme-surface: #0f172a;
+  --acme-surface-muted: #1e293b;
 
-  --popover: 222 47% 10%;
-  --popover-foreground: 210 40% 98%;
+  --acme-text: #f8fafc;
+  --acme-text-muted: #94a3b8;
 
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
+  --acme-border: #334155;
 
-  --secondary: 217 33% 17%;
-  --secondary-foreground: 210 40% 98%;
-
-  --muted: 217 33% 17%;
-  --muted-foreground: 215 20% 65%;
-
-  --accent: 217 33% 17%;
-  --accent-foreground: 210 40% 98%;
-
-  --destructive: 0 63% 55%;
-  --destructive-foreground: 210 40% 98%;
-
-  --success: 142 70% 45%;
-  --warning: 38 92% 55%;
-
-  --border: 217 33% 18%;
-  --input: 217 33% 18%;
-  --ring: 217 91% 60%;
+  --acme-success: #4ade80;
+  --acme-warning: #fbbf24;
+  --acme-danger: #f87171;
+  --acme-info: #38bdf8;
 }
 
-* {
-  border-color: hsl(var(--border));
-}
+/* -------------------------------------------------------
+   Base
+------------------------------------------------------- */
 
 html {
   min-width: 320px;
-  background: hsl(var(--background));
+  min-height: 100%;
+  background: var(--acme-background);
 }
 
 body {
@@ -88,8 +68,8 @@ body {
   min-height: 100vh;
   margin: 0;
 
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background: var(--acme-background);
+  color: var(--acme-text);
 
   font-family:
     Inter,
@@ -100,9 +80,17 @@ body {
     "Segoe UI",
     sans-serif;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+#root {
+  min-height: 100vh;
+}
+
+/* -------------------------------------------------------
+   Form controls
+------------------------------------------------------- */
 
 button,
 input,
@@ -119,27 +107,33 @@ button:disabled {
   cursor: not-allowed;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+/* -------------------------------------------------------
+   Selection
+------------------------------------------------------- */
 
 ::selection {
-  background: hsl(var(--primary) / 0.2);
+  background: var(--acme-brand-light);
+  color: var(--acme-text);
 }
+
+/* -------------------------------------------------------
+   Scrollbar
+------------------------------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark * {
+  scrollbar-color: #475569 transparent;
+}
+
+/* -------------------------------------------------------
+   Focus
+------------------------------------------------------- */
 
 :focus-visible {
-  outline: 2px solid hsl(var(--ring));
+  outline: 2px solid var(--acme-brand);
   outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }

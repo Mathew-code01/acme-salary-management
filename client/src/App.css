@@ -1,0 +1,14 @@
+
+/* client/src/App.css */
+
+/*
+ * Application-level styles only.
+ *
+ * Global styles and Tailwind v4 are loaded from index.css.
+ * Keep this file intentionally small so it does not override
+ * component-level Tailwind classes.
+ */
+
+.app-shell {
+  min-height: 100vh;
+}

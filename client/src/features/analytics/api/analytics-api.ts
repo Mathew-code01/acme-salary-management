@@ -1,6 +1,5 @@
 // client/src/features/analytics/api/analytics-api.ts
 
-
 import { apiClient } from '../../../lib/api-client';
 
 import type {
@@ -18,14 +17,9 @@ import type {
  */
 export class AnalyticsApiError extends Error {
   readonly status: number;
-
   readonly details: unknown;
 
-  constructor(
-    message: string,
-    status = 0,
-    details: unknown = undefined,
-  ) {
+  constructor(message: string, status = 0, details: unknown = undefined) {
     super(message);
 
     this.name = 'AnalyticsApiError';
@@ -40,9 +34,7 @@ export class AnalyticsApiError extends Error {
 /* Query building                                                             */
 /* -------------------------------------------------------------------------- */
 
-function buildParams(
-  filters: Partial<AnalyticsQueryFilters> = {},
-): URLSearchParams {
+function buildParams(filters: Partial<AnalyticsQueryFilters> = {}): URLSearchParams {
   const params = new URLSearchParams();
 
   const countryCode = filters.countryCode?.trim();
@@ -69,11 +61,8 @@ function buildParams(
   return params;
 }
 
-function buildQuery(
-  filters: Partial<AnalyticsQueryFilters> = {},
-): string {
+function buildQuery(filters: Partial<AnalyticsQueryFilters> = {}): string {
   const params = buildParams(filters);
-
   const query = params.toString();
 
   return query ? `?${query}` : '';
@@ -89,15 +78,12 @@ interface ApiErrorShape {
 
     data?: {
       message?: unknown;
-
       error?: unknown;
     };
   };
 
   message?: string;
-
   code?: string;
-
   name?: string;
 }
 
@@ -119,16 +105,9 @@ function extractApiError(error: unknown): AnalyticsApiError {
         ? responseData.error
         : undefined;
 
-  const message =
-    serverMessage ??
-    apiError.message ??
-    'Unable to load analytics data.';
+  const message = serverMessage ?? apiError.message ?? 'Unable to load analytics data.';
 
-  return new AnalyticsApiError(
-    message,
-    status,
-    responseData,
-  );
+  return new AnalyticsApiError(message, status, responseData);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -137,20 +116,19 @@ function extractApiError(error: unknown): AnalyticsApiError {
 
 export const analyticsApi = {
   /**
-   * Fetch the high-level analytics overview.
+   * GET /api/v1/analytics/overview
    */
   async getOverview(
     filters: Partial<AnalyticsQueryFilters> = {},
     signal?: AbortSignal,
   ): Promise<AnalyticsOverview> {
     try {
-      const response =
-        await apiClient.get<AnalyticsResponse<AnalyticsOverview>>(
-          `/api/v1/analytics/overview${buildQuery(filters)}`,
-          {
-            signal,
-          },
-        );
+      const response = await apiClient.get<AnalyticsResponse<AnalyticsOverview>>(
+        `/analytics/overview${buildQuery(filters)}`,
+        {
+          signal,
+        },
+      );
 
       return response.data.data;
     } catch (error) {
@@ -159,20 +137,19 @@ export const analyticsApi = {
   },
 
   /**
-   * Fetch salary distribution.
+   * GET /api/v1/analytics/distribution
    */
   async getDistribution(
     filters: Partial<AnalyticsQueryFilters> = {},
     signal?: AbortSignal,
   ): Promise<SalaryDistribution> {
     try {
-      const response =
-        await apiClient.get<AnalyticsResponse<SalaryDistribution>>(
-          `/api/v1/analytics/distribution${buildQuery(filters)}`,
-          {
-            signal,
-          },
-        );
+      const response = await apiClient.get<AnalyticsResponse<SalaryDistribution>>(
+        `/analytics/distribution${buildQuery(filters)}`,
+        {
+          signal,
+        },
+      );
 
       return response.data.data;
     } catch (error) {
@@ -181,20 +158,19 @@ export const analyticsApi = {
   },
 
   /**
-   * Fetch country analytics.
+   * GET /api/v1/analytics/countries
    */
   async getCountries(
     filters: Partial<AnalyticsQueryFilters> = {},
     signal?: AbortSignal,
   ): Promise<CountryAnalytics> {
     try {
-      const response =
-        await apiClient.get<AnalyticsResponse<CountryAnalytics>>(
-          `/api/v1/analytics/countries${buildQuery(filters)}`,
-          {
-            signal,
-          },
-        );
+      const response = await apiClient.get<AnalyticsResponse<CountryAnalytics>>(
+        `/analytics/countries${buildQuery(filters)}`,
+        {
+          signal,
+        },
+      );
 
       return response.data.data;
     } catch (error) {
@@ -203,20 +179,19 @@ export const analyticsApi = {
   },
 
   /**
-   * Fetch department analytics.
+   * GET /api/v1/analytics/departments
    */
   async getDepartments(
     filters: Partial<AnalyticsQueryFilters> = {},
     signal?: AbortSignal,
   ): Promise<DepartmentAnalytics> {
     try {
-      const response =
-        await apiClient.get<AnalyticsResponse<DepartmentAnalytics>>(
-          `/api/v1/analytics/departments${buildQuery(filters)}`,
-          {
-            signal,
-          },
-        );
+      const response = await apiClient.get<AnalyticsResponse<DepartmentAnalytics>>(
+        `/analytics/departments${buildQuery(filters)}`,
+        {
+          signal,
+        },
+      );
 
       return response.data.data;
     } catch (error) {
@@ -225,20 +200,19 @@ export const analyticsApi = {
   },
 
   /**
-   * Fetch role analytics.
+   * GET /api/v1/analytics/roles
    */
   async getRoles(
     filters: Partial<AnalyticsQueryFilters> = {},
     signal?: AbortSignal,
   ): Promise<RoleAnalytics> {
     try {
-      const response =
-        await apiClient.get<AnalyticsResponse<RoleAnalytics>>(
-          `/api/v1/analytics/roles${buildQuery(filters)}`,
-          {
-            signal,
-          },
-        );
+      const response = await apiClient.get<AnalyticsResponse<RoleAnalytics>>(
+        `/analytics/roles${buildQuery(filters)}`,
+        {
+          signal,
+        },
+      );
 
       return response.data.data;
     } catch (error) {
@@ -248,14 +222,8 @@ export const analyticsApi = {
 
   /**
    * Fetch the complete analytics dashboard.
-   *
-   * All analytics requests use the same AbortSignal so a filter change
-   * can cancel the entire previous dashboard request.
    */
-  async getAll(
-    filters: Partial<AnalyticsQueryFilters> = {},
-    signal?: AbortSignal,
-  ) {
+  async getAll(filters: Partial<AnalyticsQueryFilters> = {}, signal?: AbortSignal) {
     try {
       const query = buildQuery(filters);
 
@@ -266,55 +234,34 @@ export const analyticsApi = {
         departmentsResponse,
         rolesResponse,
       ] = await Promise.all([
-        apiClient.get<AnalyticsResponse<AnalyticsOverview>>(
-          `/api/v1/analytics/overview${query}`,
-          {
-            signal,
-          },
-        ),
+        apiClient.get<AnalyticsResponse<AnalyticsOverview>>(`/analytics/overview${query}`, {
+          signal,
+        }),
 
-        apiClient.get<AnalyticsResponse<SalaryDistribution>>(
-          `/api/v1/analytics/distribution${query}`,
-          {
-            signal,
-          },
-        ),
+        apiClient.get<AnalyticsResponse<SalaryDistribution>>(`/analytics/distribution${query}`, {
+          signal,
+        }),
 
-        apiClient.get<AnalyticsResponse<CountryAnalytics>>(
-          `/api/v1/analytics/countries${query}`,
-          {
-            signal,
-          },
-        ),
+        apiClient.get<AnalyticsResponse<CountryAnalytics>>(`/analytics/countries${query}`, {
+          signal,
+        }),
 
-        apiClient.get<AnalyticsResponse<DepartmentAnalytics>>(
-          `/api/v1/analytics/departments${query}`,
-          {
-            signal,
-          },
-        ),
+        apiClient.get<AnalyticsResponse<DepartmentAnalytics>>(`/analytics/departments${query}`, {
+          signal,
+        }),
 
-        apiClient.get<AnalyticsResponse<RoleAnalytics>>(
-          `/api/v1/analytics/roles${query}`,
-          {
-            signal,
-          },
-        ),
+        apiClient.get<AnalyticsResponse<RoleAnalytics>>(`/analytics/roles${query}`, {
+          signal,
+        }),
       ]);
 
       return {
         overview: overviewResponse.data.data,
-
         distribution: distributionResponse.data.data,
-
         countries: countriesResponse.data.data,
-
         departments: departmentsResponse.data.data,
-
         roles: rolesResponse.data.data,
-
-        generatedAt:
-          overviewResponse.data.meta.generatedAt,
+        generatedAt: overviewResponse.data.meta.generatedAt,
       };
     } catch (error) {
       throw extractApiError(error);

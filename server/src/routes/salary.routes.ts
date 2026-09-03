@@ -3,7 +3,6 @@
 import { Router } from 'express';
 
 import { salaryController } from '../controllers/salary.controller';
-
 import { validate } from '../middleware/validation';
 
 import {
@@ -13,14 +12,10 @@ import {
   updateSalarySchema,
 } from '../schemas/salary.schema';
 
-import { employeeIdParamSchema } from '../schemas/employee.schema';
-
 const router = Router();
 
 /**
- * GET /api/v1/salary
- *
- * List salary records.
+ * GET /api/v1/salaries
  */
 router.get(
   '/',
@@ -31,25 +26,23 @@ router.get(
 );
 
 /**
- * GET /api/v1/salary/employee/:employeeId
+ * GET /api/v1/salaries/employee/:employeeId
  *
- * Get the salary record belonging to an employee.
- *
- * This route must appear before /:id so "employee" is not
- * interpreted as a salary record ID.
+ * IMPORTANT:
+ * This must appear before /:id.
  */
 router.get(
   '/employee/:employeeId',
   validate({
-    params: employeeIdParamSchema,
+    params: salaryIdParamSchema.extend({
+      employeeId: salaryIdParamSchema.shape.id,
+    }),
   }),
   salaryController.getByEmployeeId.bind(salaryController),
 );
 
 /**
- * GET /api/v1/salary/:id
- *
- * Get one salary record by its primary key.
+ * GET /api/v1/salaries/:id
  */
 router.get(
   '/:id',
@@ -60,9 +53,7 @@ router.get(
 );
 
 /**
- * POST /api/v1/salary
- *
- * Create a salary record.
+ * POST /api/v1/salaries
  */
 router.post(
   '/',
@@ -73,9 +64,7 @@ router.post(
 );
 
 /**
- * PATCH /api/v1/salary/:id
- *
- * Update a salary record.
+ * PATCH /api/v1/salaries/:id
  */
 router.patch(
   '/:id',
@@ -87,9 +76,7 @@ router.patch(
 );
 
 /**
- * DELETE /api/v1/salary/:id
- *
- * Delete a salary record.
+ * DELETE /api/v1/salaries/:id
  */
 router.delete(
   '/:id',
