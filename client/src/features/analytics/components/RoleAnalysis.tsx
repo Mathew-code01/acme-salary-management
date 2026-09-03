@@ -1,66 +1,65 @@
 // client/src/features/analytics/components/RoleAnalysis.tsx
+import { BriefcaseBusiness, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { useState } from 'react';
 
-import {
-  BriefcaseBusiness,
-  Users,
-} from 'lucide-react';
+import type { RoleAnalytics } from '../types/analytics';
 
-import type {
-  RoleAnalytics,
-} from '../types/analytics';
-
-import {
-  formatCents,
-  formatNumber,
-} from '../utils/analytics-formatters';
+import { formatCents, formatNumber } from '../utils/analytics-formatters';
 
 interface RoleAnalysisProps {
   data: RoleAnalytics;
 }
 
-export function RoleAnalysis({
-  data,
-}: RoleAnalysisProps) {
-  const rows = [...data.rows].sort(
-    (a, b) =>
-      b.employeeCount - a.employeeCount,
-  );
+const DISPLAY_LIMIT = 6;
+
+export function RoleAnalysis({ data }: RoleAnalysisProps) {
+  const [showAll, setShowAll] = useState(false);
+
+  const rows = [...data.rows].sort((a, b) => b.employeeCount - a.employeeCount);
+
+  const visibleRows = showAll ? rows : rows.slice(0, DISPLAY_LIMIT);
 
   return (
-    <section className="rounded-xl border border-border bg-card shadow-sm">
-      <div className="border-b border-border px-5 py-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <BriefcaseBusiness
-              className="h-4 w-4"
-              aria-hidden="true"
-            />
+    <section className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm">
+      <div className="flex flex-col gap-3 border-b border-border/70 px-4 py-4 min-[480px]:px-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <BriefcaseBusiness className="h-4 w-4" />
           </div>
 
           <div>
-            <h2 className="text-base font-semibold text-foreground">
-              Role analysis
-            </h2>
+            <h2 className="text-sm font-bold text-foreground">Role analysis</h2>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-              Employee and compensation distribution
-              across roles.
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              Employee and compensation distribution across roles.
             </p>
           </div>
         </div>
+
+        {rows.length > DISPLAY_LIMIT ? (
+          <button
+            type="button"
+            onClick={() => setShowAll((value) => !value)}
+            className="inline-flex w-fit items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/10"
+          >
+            {showAll ? 'Show less' : `View all ${rows.length}`}
+            {showAll ? (
+              <ChevronUp className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
+          </button>
+        ) : null}
       </div>
 
       {rows.length === 0 ? (
-        <div className="flex min-h-40 items-center justify-center px-5">
+        <div className="flex min-h-56 items-center justify-center px-5">
           <div className="text-center">
-            <Users
-              className="mx-auto h-7 w-7 text-muted-foreground"
-              aria-hidden="true"
-            />
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
+              <Users className="h-5 w-5 text-muted-foreground" />
+            </div>
 
-            <p className="mt-3 text-sm font-medium text-foreground">
-              No role data
-            </p>
+            <p className="mt-3 text-sm font-semibold text-foreground">No role data</p>
 
             <p className="mt-1 text-xs text-muted-foreground">
               No roles match the selected filters.
@@ -68,130 +67,138 @@ export function RoleAnalysis({
           </div>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-sm">
-            <caption className="sr-only">
-              Salary analysis by role
-            </caption>
+        <>
+          <div className="hidden overflow-x-auto sm:block">
+            <table className="w-full text-sm">
+              <caption className="sr-only">Salary analysis by role</caption>
 
-            <thead>
-              <tr className="border-b border-border bg-muted/40 text-left">
-                <th className="px-5 py-3 font-medium text-muted-foreground">
-                  Role
-                </th>
+              <thead>
+                <tr className="border-b border-border/70 bg-muted/30 text-left">
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Role</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">
+                    Employees
+                  </th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">
+                    Currency
+                  </th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Payroll</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-muted-foreground">Average</th>
+                </tr>
+              </thead>
 
-                <th className="px-5 py-3 font-medium text-muted-foreground">
-                  Employees
-                </th>
+              <tbody>
+                {visibleRows.map((row) => {
+                  const payroll = row.totalPayrollByCurrency;
 
-                <th className="px-5 py-3 font-medium text-muted-foreground">
-                  Currency
-                </th>
+                  return (
+                    <tr
+                      key={row.role}
+                      className="border-b border-border/60 last:border-0 hover:bg-muted/20"
+                    >
+                      <td className="px-5 py-3.5">
+                        <div className="font-semibold text-foreground">{row.role}</div>
+                      </td>
 
-                <th className="px-5 py-3 font-medium text-muted-foreground">
-                  Payroll
-                </th>
+                      <td className="px-5 py-3.5 text-muted-foreground">
+                        {formatNumber(row.employeeCount)}
+                      </td>
 
-                <th className="px-5 py-3 font-medium text-muted-foreground">
-                  Average
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {rows.map((row) => {
-                const payroll =
-                  row.totalPayrollByCurrency;
-
-                return (
-                  <tr
-                    key={row.role}
-                    className="border-b border-border last:border-0"
-                  >
-                    <td className="px-5 py-3 font-medium text-foreground">
-                      {row.role}
-                    </td>
-
-                    <td className="px-5 py-3 text-muted-foreground">
-                      {formatNumber(
-                        row.employeeCount,
-                      )}
-                    </td>
-
-                    <td className="px-5 py-3">
-                      {payroll.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {payroll.map(
-                            (item) => (
+                      <td className="px-5 py-3.5">
+                        {payroll.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {payroll.map((item) => (
                               <span
                                 key={item.currency}
-                                className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground"
+                                className="rounded-md bg-muted px-2 py-1 text-[10px] font-bold text-muted-foreground"
                               >
                                 {item.currency.toUpperCase()}
                               </span>
-                            ),
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground">
-                          —
-                        </span>
-                      )}
-                    </td>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </td>
 
-                    <td className="px-5 py-3">
-                      {payroll.length > 0 ? (
-                        <div className="space-y-1">
-                          {payroll.map(
-                            (item) => (
-                              <div
-                                key={item.currency}
-                                className="font-medium text-foreground"
-                              >
-                                {formatCents(
-                                  item.totalPayrollCents,
-                                  item.currency,
-                                )}
+                      <td className="px-5 py-3.5">
+                        {payroll.length > 0 ? (
+                          <div className="space-y-1">
+                            {payroll.map((item) => (
+                              <div key={item.currency} className="font-semibold text-foreground">
+                                {formatCents(item.totalPayrollCents, item.currency)}
                               </div>
-                            ),
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground">
-                          —
-                        </span>
-                      )}
-                    </td>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </td>
 
-                    <td className="px-5 py-3">
-                      {payroll.length > 0 ? (
-                        <div className="space-y-1">
-                          {payroll.map(
-                            (item) => (
-                              <div
-                                key={item.currency}
-                                className="text-muted-foreground"
-                              >
-                                {formatCents(
-                                  item.averageSalaryCents,
-                                  item.currency,
-                                )}
+                      <td className="px-5 py-3.5">
+                        {payroll.length > 0 ? (
+                          <div className="space-y-1">
+                            {payroll.map((item) => (
+                              <div key={item.currency} className="text-muted-foreground">
+                                {formatCents(item.averageSalaryCents, item.currency)}
                               </div>
-                            ),
-                          )}
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="divide-y divide-border/60 sm:hidden">
+            {visibleRows.map((row) => {
+              const payroll = row.totalPayrollByCurrency;
+
+              return (
+                <article key={row.role} className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="break-words text-sm font-semibold leading-5 text-foreground">
+                        {row.role}
+                      </h3>
+                    </div>
+
+                    <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-[10px] font-bold text-muted-foreground">
+                      {formatNumber(row.employeeCount)}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 space-y-2">
+                    {payroll.map((item) => (
+                      <div
+                        key={item.currency}
+                        className="rounded-xl border border-border/60 bg-muted/20 p-3"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="rounded-md bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">
+                            {item.currency.toUpperCase()}
+                          </span>
+
+                          <span className="text-xs text-muted-foreground">
+                            Avg {formatCents(item.averageSalaryCents, item.currency)}
+                          </span>
                         </div>
-                      ) : (
-                        <span className="text-muted-foreground">
-                          —
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+
+                        <p className="mt-2 text-sm font-bold text-foreground">
+                          {formatCents(item.totalPayrollCents, item.currency)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </>
       )}
     </section>
   );
