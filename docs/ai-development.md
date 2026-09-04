@@ -1,443 +1,255 @@
-# AI-Assisted Development
+# ACME Salary Management — AI-Assisted Development
 
 ## 1. Purpose
 
-Artificial intelligence may be used throughout the development of ACME Salary Management as an engineering assistant.
+AI tools were used as development assistants during the project.
 
-The purpose is to improve development efficiency while retaining human ownership of:
+AI was treated as a productivity and reasoning tool rather than as an autonomous source of truth.
 
-* requirements
-* architecture
-* implementation decisions
-* validation
-* security
-* testing
-* final code quality
-
-AI is not treated as an autonomous software engineer.
+All generated suggestions were reviewed, adapted, tested, and integrated into the application deliberately.
 
 ---
 
-# 2. Development Philosophy
+## 2. Areas Where AI Assisted
 
-The project follows this general workflow:
+AI assistance was used for activities including:
+
+* Architecture exploration
+* Folder structure design
+* API design discussion
+* Database modeling
+* TypeScript implementation
+* Test generation
+* Error analysis
+* Refactoring
+* Documentation
+* UX iteration
+* Performance considerations
+* Security review
+
+---
+
+## 3. AI Development Workflow
+
+The development process generally followed:
 
 ```text
 Requirement
-     ↓
-Problem Analysis
-     ↓
-Design
-     ↓
-AI Assistance
-     ↓
-Human Review
-     ↓
+    ↓
+Design / Reasoning
+    ↓
+AI-assisted exploration
+    ↓
 Implementation
-     ↓
-Testing
-     ↓
-Refactoring
-     ↓
-Verification
-     ↓
+    ↓
+Human review
+    ↓
+Tests
+    ↓
+Manual verification
+    ↓
+Refinement
+    ↓
 Commit
 ```
 
-AI assistance is therefore one part of the development process rather than the complete process.
+AI output was not automatically accepted.
 
 ---
 
-# 3. Appropriate AI Usage
+## 4. Example Prompt Categories
 
-AI may be used for the following activities.
+### Architecture
 
-## Requirements
+Questions were used to explore:
 
-AI can assist with:
+* How should frontend and backend responsibilities be separated?
+* Where should business logic live?
+* How should repositories interact with services?
+* How should the application scale to 10,000 employees?
 
-* identifying ambiguous requirements
-* identifying missing edge cases
-* restructuring requirements
-* proposing acceptance criteria
-* reviewing scope
+### Database
 
-Human review remains responsible for deciding which requirements are actually valid.
+AI assistance was used to explore:
 
----
+* Employee relationships
+* Salary relationships
+* Indexing
+* Pagination
+* Referential integrity
+* Seed-data strategies
 
-# 4. Product Design
+### API
 
-AI can assist with:
+Prompts explored:
 
-* information architecture
-* interface alternatives
-* UX flows
-* accessibility considerations
-* empty states
-* loading states
-* error states
+* REST endpoint organization
+* Validation
+* Pagination contracts
+* Error responses
+* HTTP status codes
 
-The final product design should be evaluated against actual user needs.
+### Testing
 
----
+Prompts explored:
 
-# 5. Architecture
+* Unit-test boundaries
+* Integration workflows
+* E2E scenarios
+* Regression coverage
+* Negative cases
 
-AI may be used to:
+### UX
 
-* compare architectural options
-* identify potential coupling
-* identify scalability concerns
-* suggest boundaries
-* review folder structures
-* identify potential failure points
+AI assistance was used to review:
 
-Architecture decisions must remain deliberate and documented.
-
----
-
-# 6. Database Design
-
-AI may assist with:
-
-* schema design
-* identifying relationships
-* suggesting indexes
-* identifying query patterns
-* designing deterministic seed data
-* generating sample records
-
-Database designs must be validated against actual requirements and query behavior.
+* Navigation structure
+* Enterprise application layout
+* Empty states
+* Loading states
+* Error states
+* Responsive behavior
 
 ---
 
-# 7. Backend Development
+## 5. AI Code Review Process
 
-AI may assist with:
+Generated code was reviewed against:
 
-* route scaffolding
-* controller structure
-* service structure
-* repository structure
-* validation schemas
-* error handling
-* test cases
+* Existing architecture
+* TypeScript compiler errors
+* Lint rules
+* Existing tests
+* Database schema
+* API contracts
+* Security requirements
+* Actual product requirements
 
-Generated backend code must be reviewed for:
-
-* correctness
-* security
-* input validation
-* error handling
-* performance
-* type safety
+Code was modified when AI suggestions conflicted with the project.
 
 ---
 
-# 8. Frontend Development
+## 6. Verification
 
-AI may assist with:
+AI-generated or AI-assisted implementation was verified using:
 
-* component scaffolding
-* TypeScript types
-* hooks
-* API integration
-* UI states
-* accessibility suggestions
-* test generation
+* TypeScript compilation
+* Unit tests
+* Integration tests
+* E2E tests
+* Local API testing
+* Browser testing
+* Production builds
 
-Generated UI code must be reviewed for:
-
-* usability
-* accessibility
-* responsiveness
-* unnecessary rendering
-* state management
-* visual consistency
+A suggestion was not considered complete simply because it looked syntactically correct.
 
 ---
 
-# 9. Testing
+## 7. Example Development Incident
 
-AI may be used to identify:
+During development, employee status was introduced as an enum.
 
-* missing test cases
-* boundary conditions
-* invalid inputs
-* failure scenarios
-* regression scenarios
-
-For example, when implementing employee search, AI may suggest testing:
+The feature required coordinated changes across:
 
 ```text
-empty search
-short search
-case differences
-unknown employee
-large result set
-combined filters
-pagination after filtering
-invalid page
-invalid page size
+Prisma schema
+      ↓
+Migration
+      ↓
+Seed data
+      ↓
+Repository
+      ↓
+Service mapping
+      ↓
+API
+      ↓
+Frontend
+      ↓
+Tests
 ```
 
-The development team remains responsible for deciding which tests are relevant.
+This illustrates why AI-generated changes must be reviewed across the complete dependency chain.
 
 ---
 
-# 10. Code Review
+## 8. AI Limitations
 
-AI can perform an additional review pass to identify potential issues such as:
+AI can produce:
 
-* duplicated logic
-* missing validation
-* poor error handling
-* accessibility problems
-* unnecessary complexity
-* missing tests
+* Incorrect APIs
+* Outdated library usage
+* Invalid assumptions
+* Inconsistent architecture
+* Missing edge cases
+* Security weaknesses
+* Code that compiles but does not meet requirements
 
-AI review is supplementary.
-
-It does not replace human code review.
-
----
-
-# 11. Documentation
-
-AI can assist with:
-
-* improving technical writing
-* identifying missing documentation
-* converting notes into structured documents
-* reviewing consistency
-* generating documentation outlines
-
-Technical claims must still be verified.
+Therefore, AI output was treated as a proposal rather than a final implementation.
 
 ---
 
-# 12. AI Prompt Artifacts
+## 9. Human Responsibility
 
-Meaningful prompts should be retained under:
+The developer remains responsible for:
+
+* Technical decisions
+* Requirement interpretation
+* Security
+* Testing
+* Code quality
+* Final implementation
+* Deployment configuration
+
+AI does not replace engineering judgment.
+
+---
+
+## 10. Prompt Documentation
+
+Project-specific AI prompts are maintained under:
 
 ```text
 docs/ai-prompts/
 ```
 
-The prompt documentation will correspond to actual engineering activities.
-
-Planned prompt categories include:
-
-```text
-01-requirements.md
-02-product-design.md
-03-architecture.md
-04-database.md
-05-backend.md
-06-frontend.md
-07-testing.md
-08-code-review.md
-```
-
-These artifacts should document useful development interactions rather than artificially created conversations.
+Prompts are organized around meaningful development activities rather than recording every conversational interaction.
 
 ---
 
-# 13. Prompt Quality
+## 11. AI and Testing
 
-Effective prompts should provide:
+AI-generated tests were reviewed to ensure that they tested behavior rather than implementation details.
 
-* relevant context
-* explicit constraints
-* expected output
-* technical requirements
-* known limitations
+Particular attention was given to:
 
-A useful development prompt should explain the problem rather than simply asking AI to "write code."
-
----
-
-# 14. Example Development Prompt Structure
-
-A development prompt may follow:
-
-```text
-Context
-
-Describe the current application architecture.
-
-Problem
-
-Describe the specific engineering problem.
-
-Requirements
-
-List the expected behavior.
-
-Constraints
-
-List architectural or technical constraints.
-
-Expected Output
-
-Describe exactly what should be produced.
-
-Validation
-
-Describe how the result should be verified.
-```
-
-This encourages AI output that is aligned with the project rather than generic code generation.
+* Edge cases
+* Negative paths
+* Regression scenarios
+* Business rules
 
 ---
 
-# 15. Human Review Checklist
+## 12. AI and Security
 
-AI-generated code should be reviewed for:
+Security-related AI suggestions were treated cautiously.
 
-### Correctness
+Security recommendations were reviewed against:
 
-Does the code actually satisfy the requirement?
+* Actual application architecture
+* Existing middleware
+* Deployment environment
+* Authentication model
+* Data sensitivity
 
-### Security
-
-Does it introduce vulnerabilities or expose sensitive information?
-
-### Performance
-
-Does it create unnecessary database queries, network requests, or rendering work?
-
-### Maintainability
-
-Is the implementation understandable?
-
-### Type Safety
-
-Are types accurate and meaningful?
-
-### Architecture
-
-Does the implementation follow the project's boundaries?
-
-### Testing
-
-Is important behavior covered?
-
-### Accessibility
-
-Does the UI remain accessible?
+No AI suggestion was considered a substitute for security review.
 
 ---
 
-# 16. Validation Pipeline
-
-AI-generated implementation should pass the same validation pipeline as manually written code.
-
-Expected checks include:
-
-```text
-TypeScript
-   ↓
-Lint
-   ↓
-Unit Tests
-   ↓
-Integration Tests
-   ↓
-E2E Tests
-   ↓
-Build
-   ↓
-Manual Verification
-```
-
-AI-generated code does not receive relaxed validation requirements.
-
----
-
-# 17. AI Limitations
-
-AI may:
-
-* misunderstand requirements
-* invent APIs
-* use outdated package behavior
-* generate insecure code
-* introduce unnecessary abstractions
-* make incorrect architectural assumptions
-* miss edge cases
-* produce code that compiles but behaves incorrectly
-* incorrectly interpret existing code
-
-These limitations are expected.
-
----
-
-# 18. Avoiding Blind Copy/Paste
-
-Generated code should not be copied into the project without understanding its purpose.
-
-Before accepting generated code, the developer should be able to explain:
-
-* what the code does
-* why it is needed
-* what assumptions it makes
-* what could fail
-* how it is tested
-* how it fits the architecture
-
----
-
-# 19. AI and Security
-
-AI prompts must not contain:
-
-* passwords
-* API keys
-* private tokens
-* production credentials
-* private employee information
-* database credentials
-* secrets stored in environment files
-
-Sensitive information should be replaced with safe placeholders.
-
----
-
-# 20. AI and Project Ownership
-
-The developer remains responsible for the final implementation.
-
-AI assistance does not transfer responsibility for:
-
-* bugs
-* security vulnerabilities
-* architectural mistakes
-* incorrect requirements
-* failing tests
-* deployment problems
-
-The final repository represents the developer's engineering decisions.
-
----
-
-# 21. AI Usage Principle
+## 13. AI-Assisted Engineering Principle
 
 The project follows this principle:
 
-> AI accelerates engineering work; it does not replace engineering judgment.
+> AI accelerates engineering work; it does not remove engineering responsibility.
 
-The strongest use of AI is therefore not simply generating more code.
-
-It is using AI to:
-
-1. explore possibilities
-2. challenge assumptions
-3. identify edge cases
-4. accelerate repetitive work
-5. improve documentation
-6. improve test coverage
-7. review implementation quality
-
-while keeping humans responsible for the final result.
+The final codebase represents reviewed and verified engineering decisions rather than unreviewed AI output.

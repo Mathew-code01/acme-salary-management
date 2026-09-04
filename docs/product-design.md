@@ -1,620 +1,414 @@
-# ACME Salary Management — Product Design
+# ACME Salary Management — Product & UX Design
 
 ## 1. Product Vision
 
-ACME Salary Management should feel like a professional internal enterprise application rather than a prototype.
+ACME Salary Management is designed as an enterprise HR compensation workspace.
 
-The interface should prioritize:
+The primary UX goal is to make employee and compensation information easy to discover without overwhelming the user with unnecessary complexity.
 
-* clarity
-* information hierarchy
-* efficient workflows
-* readable data
-* predictable interactions
-* accessibility
-* responsive behavior
+The interface prioritizes:
 
-The product should help an HR user understand compensation without requiring unnecessary navigation or technical knowledge.
-
----
-
-# 2. Primary User
-
-The primary user is an HR manager or HR administrator.
-
-The interface should therefore optimize for:
-
-* frequent data lookup
-* rapid employee search
-* structured filtering
-* comparison
-* data interpretation
-* controlled editing
+* Clarity
+* Consistency
+* Speed
+* Information hierarchy
+* Accessibility
+* Responsive behavior
+* Predictable navigation
 
 ---
 
-# 3. Information Architecture
+## 2. Target Users
 
-The application has three primary areas:
+### HR Administrator
+
+Needs to:
+
+* Browse employees
+* Search employee records
+* Review organizational information
+* Review compensation
+* Perform salary-related workflows
+* Understand compensation trends
+
+### HR Manager
+
+Needs to:
+
+* Understand workforce composition
+* Compare salary patterns
+* Review departmental compensation
+* Identify unusual salary distributions
+
+### Executive/Management User
+
+Needs:
+
+* High-level metrics
+* Compensation trends
+* Department and country summaries
+* Minimal interaction cost
+
+---
+
+## 3. Information Architecture
+
+The application is organized around the following primary areas:
 
 ```text
-Dashboard
-Employees
-Analytics
+Application
+├── Dashboard
+├── Employees
+│   ├── Employee List
+│   └── Employee Details
+├── Salary
+└── Analytics
 ```
 
-Secondary pages include:
+The navigation structure intentionally mirrors the user's mental model:
+
+1. Understand the organization.
+2. Find an employee.
+3. Inspect compensation.
+4. Analyze broader salary patterns.
+
+---
+
+## 4. Application Shell
+
+The application uses a consistent enterprise shell containing:
+
+* Sidebar navigation
+* Header
+* Main content area
+* Page container
+* Page header
+* Responsive mobile navigation
+
+The shell ensures that users do not need to relearn navigation patterns between screens.
+
+---
+
+## 5. Navigation Design
+
+Desktop navigation uses a persistent sidebar.
+
+The sidebar contains the primary application destinations.
+
+On smaller screens, navigation changes into a mobile-friendly navigation experience.
+
+Navigation configuration is centralized rather than duplicated across components.
+
+This allows:
+
+* Consistent labels
+* Consistent icons
+* Easier route changes
+* Easier active-state management
+
+---
+
+## 6. Dashboard Design
+
+The dashboard provides an executive summary.
+
+The visual hierarchy is:
 
 ```text
-Employee Details
-Not Found
-Application Error
+Page Header
+    ↓
+Key Metrics
+    ↓
+Compensation Summary
+    ↓
+Organizational Breakdown
+    ↓
+Supporting Analytics
 ```
 
----
+The dashboard should avoid displaying every available metric.
 
-# 4. Global Application Layout
+The goal is to answer:
 
-The desktop application will use:
-
-```text
-┌───────────────────────────────────────────────────────────┐
-│ Header                                                    │
-├────────────────┬──────────────────────────────────────────┤
-│                │                                          │
-│ Sidebar        │ Main Content                             │
-│                │                                          │
-│ Dashboard      │                                          │
-│ Employees      │                                          │
-│ Analytics      │                                          │
-│                │                                          │
-│                │                                          │
-└────────────────┴──────────────────────────────────────────┘
-```
-
-The layout should maintain a consistent navigation model across all pages.
+* How many employees do we have?
+* How many are active?
+* What does compensation look like?
+* Where is the workforce concentrated?
+* Are there meaningful salary patterns?
 
 ---
 
-# 5. Navigation
+## 7. Employee List Design
 
-## Dashboard
+The employee list is designed for frequent operational use.
 
-Provides a high-level compensation overview.
+Primary elements:
 
-## Employees
+* Search input
+* Filters
+* Employee table/list
+* Pagination
+* Loading state
+* Empty state
+* Error state
 
-Provides access to the searchable employee dataset.
+The table should prioritize information that helps users identify employees quickly.
 
-## Analytics
+Primary columns include:
 
-Provides detailed compensation analysis.
-
----
-
-# 6. Dashboard
-
-The dashboard is the first screen users should see.
-
-Its purpose is to answer:
-
-> "What does compensation look like across the organization?"
-
----
-
-## 6.1 Dashboard Header
-
-The header should contain:
-
-* page title
-* short contextual description
-* optional date or data freshness information
-
-Example:
-
-```text
-Compensation Overview
-
-Understand salary distribution and payroll across the organization.
-```
+* Employee
+* Employee code
+* Email
+* Department
+* Role
+* Country
+* Status
+* Compensation
 
 ---
 
-## 6.2 KPI Cards
+## 8. Employee Status
 
-The dashboard should provide four primary metrics:
+Employee status is visually represented using semantic status indicators.
 
-```text
-┌────────────────┐ ┌────────────────┐
-│ Employees      │ │ Total Payroll  │
-│ 10,000         │ │ $850M          │
-└────────────────┘ └────────────────┘
+The two supported statuses are:
 
-┌────────────────┐ ┌────────────────┐
-│ Average Salary │ │ Median Salary  │
-│ $85,000        │ │ $78,000        │
-└────────────────┘ └────────────────┘
-```
+* Active
+* Inactive
 
-The actual values are determined from the database.
+Status styling should not rely exclusively on color.
+
+Text labels are always present so that users can understand the state without depending on color perception.
 
 ---
 
-# 7. Dashboard Visualizations
+## 9. Employee Details
 
-The dashboard should contain a limited number of high-value visualizations.
+The employee details page should present information in logical sections.
 
-Recommended visualizations:
+### Identity
 
-1. Salary Distribution
-2. Salary by Country
-3. Salary by Department
+* Name
+* Employee code
+* Email
 
-Charts should communicate information rather than exist purely as decoration.
+### Organization
 
----
+* Country
+* Department
+* Role
+* Employment status
 
-# 8. Employees Page
+### Compensation
 
-The Employees page is the primary operational workspace.
+* Salary
+* Currency
+* Effective date
 
-It should contain:
-
-```text
-Employee Management
-
-[ Search employees... ]
-
-[ Country ▼ ] [ Department ▼ ] [ Role ▼ ]
-
-┌─────────────────────────────────────────────────────────────┐
-│ Employee │ Department │ Role │ Country │ Salary │ Actions  │
-├─────────────────────────────────────────────────────────────┤
-│ ...                                                         │
-└─────────────────────────────────────────────────────────────┘
-
-                 < 1 2 3 4 5 >
-```
+The page should use cards or structured sections rather than presenting a large undifferentiated block of information.
 
 ---
 
-# 9. Employee Search
+## 10. Salary UX
 
-Search should be prominent and easy to access.
+Salary-related interactions should emphasize accuracy.
 
-Users should be able to search by:
+Salary values should:
 
-* employee ID
-* name
-* email
+* Be clearly labeled
+* Display currency
+* Use consistent formatting
+* Avoid ambiguous numeric input
+* Show validation errors near the relevant field
 
-Search should use a debounce mechanism to prevent excessive API requests while typing.
-
----
-
-# 10. Employee Filters
-
-Filters should be displayed near the search control.
-
-Primary filters:
-
-* country
-* department
-* role
-
-Filters should work together.
-
-The active filter state should be visible to the user.
+Destructive or financially significant actions should require deliberate user interaction.
 
 ---
 
-# 11. Employee Table
+## 11. Analytics UX
 
-The table should provide enough information to identify an employee quickly.
-
-Recommended columns:
-
-```text
-Employee
-Email
-Department
-Role
-Country
-Salary
-Actions
-```
-
-The employee identifier may be displayed within the employee identity cell rather than requiring a separate column.
-
----
-
-# 12. Employee Row
-
-Each row should provide:
-
-* employee identity
-* organizational information
-* salary
-* navigation to details
-* available actions
-
-Actions should not overwhelm the table.
-
----
-
-# 13. Employee Details
-
-The employee details page should organize information into clear sections.
-
-```text
-Employee Details
-
-[ Back to Employees ]
-
-┌──────────────────────────────────────┐
-│ Employee Information                │
-│                                      │
-│ Name                                 │
-│ Email                                │
-│ Employee ID                          │
-└──────────────────────────────────────┘
-
-┌──────────────────────────────────────┐
-│ Organization                         │
-│                                      │
-│ Department                           │
-│ Role                                 │
-│ Country                              │
-└──────────────────────────────────────┘
-
-┌──────────────────────────────────────┐
-│ Compensation                         │
-│                                      │
-│ Salary                               │
-│ Currency                             │
-│ Compensation Context                 │
-│                                      │
-│ [ Edit Salary ]                      │
-└──────────────────────────────────────┘
-```
-
----
-
-# 14. Editing
-
-Editing should be explicit.
-
-Forms should:
-
-* display current values
-* clearly identify editable fields
-* validate input
-* display validation errors
-* provide save and cancel actions
-* prevent accidental loss of changes
-
----
-
-# 15. Delete Interaction
-
-Deleting an employee is destructive.
-
-The interface should require confirmation.
-
-Example:
-
-```text
-Delete employee?
-
-This action cannot be undone.
-
-[Cancel] [Delete employee]
-```
-
-The confirmation should clearly identify the employee being deleted.
-
----
-
-# 16. Analytics Page
-
-The Analytics page should provide deeper analysis than the dashboard.
-
-Sections:
-
-```text
-Analytics
-
-Summary
-Salary Distribution
-Country Analysis
-Department Analysis
-Role Analysis
-```
-
----
-
-# 17. Analytics Filters
-
-Analytics should support relevant filters where meaningful.
-
-Potential filters:
-
-* country
-* department
-* role
-
-The filtering model should remain simple and should not introduce unnecessary complexity.
-
----
-
-# 18. Salary Distribution
-
-The salary distribution visualization should show how employees are distributed across salary ranges.
-
-Example:
-
-```text
-Employees
-
-2500 ┤
-2000 ┤ ███
-1500 ┤ █████
-1000 ┤ ███████
- 500 ┤ █████
-   0 └────────────────────────
-       Salary Range
-```
-
-The final implementation may use a charting library appropriate for the project.
-
----
-
-# 19. Country Analysis
-
-Country analysis should allow users to compare compensation across countries.
-
-Potential displayed metrics:
-
-* employees
-* average salary
-* total payroll
-
-The UI should make comparisons easy to understand.
-
----
-
-# 20. Department Analysis
-
-Department analysis should provide similar information:
-
-* employee count
-* average salary
-* total payroll
-
----
-
-# 21. Role Analysis
-
-Role analysis should allow users to understand compensation by role.
-
-Potential information:
-
-* employee count
-* average salary
-* total payroll
-
----
-
-# 22. Loading States
-
-Every asynchronous page should have a useful loading state.
+Analytics should answer questions rather than simply display charts.
 
 Examples:
 
-* skeleton cards
-* skeleton table rows
-* chart placeholders
+* Average salary by department
+* Salary distribution
+* Employee distribution by country
+* Employee distribution by department
 
-Loading states should preserve the approximate layout of the final content where practical.
+Charts should include meaningful labels and supporting values.
 
----
-
-# 23. Empty States
-
-Empty states should explain the situation.
-
-Example:
-
-```text
-No employees found
-
-Try adjusting your search or filters.
-```
-
-Empty states should not look like application errors.
+A chart should not be used when a simple metric or table communicates the information more effectively.
 
 ---
 
-# 24. Error States
+## 12. Loading States
 
-Errors should communicate:
+The application should communicate when data is being retrieved.
 
-1. what happened
-2. whether the user needs to act
-3. whether retrying is possible
+Loading states should:
 
-Example:
+* Preserve layout stability
+* Avoid unnecessary page flashing
+* Give the user clear feedback
+* Prevent duplicate actions where appropriate
 
-```text
-Unable to load employees
-
-Something went wrong while retrieving employee data.
-
-[ Try again ]
-```
-
-Technical stack traces should never be shown to normal users.
+Skeleton or structured loading states are preferred for larger data views.
 
 ---
 
-# 25. Responsive Design
+## 13. Empty States
 
-Desktop is the primary experience.
-
-Tablet and mobile layouts should remain functional.
-
-On smaller screens:
-
-* sidebar becomes mobile navigation
-* filters may collapse
-* cards stack
-* tables may scroll horizontally
-* page headers adapt
-* actions remain accessible
-
----
-
-# 26. Accessibility
-
-The interface should follow accessible interaction patterns.
-
-Important requirements include:
-
-* semantic HTML
-* keyboard navigation
-* visible focus indicators
-* labels for form controls
-* accessible dialog behavior
-* accessible buttons
-* meaningful link names
-* sufficient contrast
-* clear validation errors
-* appropriate ARIA only where necessary
-
----
-
-# 27. Visual Design Direction
-
-The visual language should be:
-
-* professional
-* restrained
-* clean
-* data-focused
-* modern
-* enterprise-oriented
-
-Avoid excessive:
-
-* gradients
-* decorative animations
-* oversized typography
-* glassmorphism
-* visual noise
-
-The goal is to make important information easy to scan.
-
----
-
-# 28. Component Design
-
-Reusable primitives should be separated from feature-specific components.
-
-### Shared UI
+Empty states should explain why there is no data.
 
 Examples:
 
-```text
-Button
-Input
-Select
-Dialog
-Dropdown
-Badge
-Card
-Table
-Skeleton
-Tooltip
-Pagination
-```
+* No employees match the current search.
+* No employees match the selected filters.
+* No salary information is available.
 
-### Layout
-
-Examples:
-
-```text
-AppShell
-PageContainer
-PageHeader
-ContentArea
-```
-
-### Feature Components
-
-Examples:
-
-```text
-EmployeeTable
-EmployeeSearch
-SalaryCard
-AnalyticsSummary
-SalaryDistribution
-```
-
-This prevents business-specific behavior from leaking into generic UI primitives.
+Empty states should not look like application failures.
 
 ---
 
-# 29. Interaction Principles
+## 14. Error States
 
-## Predictability
+Errors should be:
 
-Actions should behave consistently across the application.
+* Clear
+* Actionable where possible
+* Non-technical for normal users
 
-## Feedback
+For example, instead of exposing:
 
-Every meaningful asynchronous action should provide feedback.
+```text
+PrismaClientKnownRequestError
+```
 
-## Reversibility
+the UI should communicate:
 
-Non-destructive actions should be easy to cancel.
+```text
+We couldn't load the employee records.
+Please try again.
+```
 
-## Confirmation
-
-Destructive actions should require deliberate confirmation.
-
-## Visibility
-
-Important application state should be visible without requiring users to inspect technical details.
-
----
-
-# 30. Performance UX
-
-The UI should:
-
-* debounce search
-* paginate large datasets
-* avoid unnecessary API requests
-* cache appropriate queries
-* avoid rendering thousands of rows
-* provide immediate loading feedback
+Technical details belong in logs, not normal user-facing messages.
 
 ---
 
-# 31. Product Quality Standard
+## 15. Responsive Design
 
-The final product should feel like a real internal HR tool.
+Responsive behavior follows a progressive layout approach.
 
-A user should not need to understand:
+### Desktop
 
-* React
-* TypeScript
-* APIs
-* databases
-* Prisma
-* HTTP
+* Persistent sidebar
+* Dense data tables
+* Multi-column analytics
 
-to use the application effectively.
+### Tablet
 
-Technical complexity belongs behind a simple user experience.
+* Reduced navigation width
+* Flexible content
+* Reduced table density
+
+### Mobile
+
+* Collapsible navigation
+* Stacked cards
+* Horizontally manageable data
+* Touch-friendly controls
+
+---
+
+## 16. Accessibility
+
+The UI should provide:
+
+* Keyboard-accessible controls
+* Semantic buttons
+* Form labels
+* Focus indicators
+* Meaningful headings
+* Accessible status labels
+* Error announcements where appropriate
+
+Icons should not be the only source of meaning.
+
+---
+
+## 17. Visual Design Principles
+
+The visual system follows enterprise application conventions:
+
+* Restrained visual hierarchy
+* Consistent spacing
+* Clear typography
+* Reusable components
+* Consistent border radii
+* Predictable interaction states
+* Limited decorative elements
+
+The interface should feel professional without looking unnecessarily complex.
+
+---
+
+## 18. Design System
+
+Reusable UI primitives are preferred over page-specific implementations.
+
+Examples include:
+
+* Button
+* Input
+* Select
+* Badge
+* Card
+* Table
+* Modal
+* Alert
+* Skeleton
+* Empty state
+* Page header
+* Navigation item
+
+This reduces visual inconsistency and improves maintainability.
+
+---
+
+## 19. UX Principles
+
+### Principle 1 — Show the important information first
+
+Users should understand the state of a page quickly.
+
+### Principle 2 — Keep workflows predictable
+
+Similar actions should behave similarly across the application.
+
+### Principle 3 — Prevent mistakes
+
+Validation and clear affordances should prevent invalid salary and employee operations.
+
+### Principle 4 — Don't hide system state
+
+Loading, empty, and error states should always be explicit.
+
+### Principle 5 — Optimize for real workflows
+
+The application should prioritize employee lookup and compensation review over decorative interactions.
+
+---
+
+## 20. Future UX Direction
+
+Potential improvements include:
+
+* Advanced saved filters
+* Bulk employee operations
+* Salary history timelines
+* Audit history
+* Role-based views
+* Custom analytics dashboards
+* Export workflows
+* User preferences

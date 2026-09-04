@@ -1,650 +1,434 @@
 # ACME Salary Management — Requirements
 
-## 1. Purpose
+## 1. Overview
 
-This document defines the functional and non-functional requirements for the ACME Salary Management application.
+ACME Salary Management is an enterprise-oriented employee and compensation management application designed to help HR and management teams browse employee records, review compensation information, perform salary updates, and understand compensation patterns through analytics.
 
-The requirements establish the expected product behavior and provide a reference for implementation, testing, and acceptance.
+The application is designed around a dataset of approximately 10,000 employees and demonstrates how a salary-management workflow can remain responsive and maintainable as the dataset grows.
 
----
+The project is implemented as a full-stack TypeScript application:
 
-# 2. Product Goal
+* React + TypeScript + Vite for the frontend
+* Node.js + Express + TypeScript for the backend
+* Prisma ORM for database access
+* SQLite for the assessment environment
+* Vitest for unit and integration testing
+* Playwright for end-to-end testing
 
-Build an internal salary management application that enables HR users to manage employee information, manage compensation information, and understand salary patterns across the organization.
-
-The application must remain usable and maintainable when working with at least 10,000 employee records.
-
----
-
-# 3. Primary User
-
-## HR Manager
-
-The primary user is an HR manager or HR administrator responsible for understanding and maintaining employee compensation information.
-
-The user should be able to:
-
-* understand compensation at a glance
-* locate employees quickly
-* inspect employee details
-* update employee information
-* update salary information
-* analyze compensation patterns
-* compare salaries across organizational dimensions
+The system focuses on employee and compensation management. It does **not** implement payroll processing, tax calculation, benefits administration, or payment execution.
 
 ---
 
-# 4. User Goals
+## 2. Product Goals
 
-The system should help the user answer questions such as:
+The primary goals are:
 
-* How many employees are in the organization?
-* What is the total payroll?
-* What is the average salary?
-* What is the median salary?
-* Which countries have the highest average salaries?
-* Which departments have the highest compensation?
-* Which roles have the highest salaries?
-* What is the salary distribution?
-* What is the salary of a particular employee?
-* How can I quickly find an employee?
-* How can I update an employee's salary?
+1. Provide a clear employee management experience.
+2. Make employee records easy to search, filter, and navigate.
+3. Provide salary information in a structured and understandable format.
+4. Allow authorized application workflows to update salary information.
+5. Provide meaningful compensation analytics.
+6. Remain responsive with approximately 10,000 employee records.
+7. Demonstrate clean separation between presentation, business logic, persistence, and API layers.
+8. Provide automated tests covering critical business workflows.
+9. Provide engineering documentation explaining architecture, trade-offs, security, performance, and deployment decisions.
 
 ---
 
-# 5. Functional Requirements
+## 3. Functional Requirements
 
-## 5.1 Employee Listing
+### 3.1 Dashboard
 
-The application must provide an employee listing.
+The dashboard should provide a high-level overview of the salary-management system.
 
-The listing should display relevant information including:
+The dashboard should display relevant aggregate information such as:
 
-* employee identifier
-* employee name
-* email
-* country
-* department
-* role
-* salary
-* currency
+* Total employees
+* Active employees
+* Inactive employees
+* Compensation-related summary metrics
+* Salary distribution information
+* Department-level information
+* Country-level information
 
-The exact displayed fields may be refined during product implementation.
-
----
-
-## 5.2 Employee Search
-
-The employee listing must support search.
-
-Search should be capable of matching relevant employee information such as:
-
-* employee identifier
-* first name
-* last name
-* full name
-* email
-
-Search requests must be processed by the backend rather than requiring the browser to download the complete employee dataset.
+Dashboard information should be retrieved from backend APIs rather than calculated exclusively from the currently displayed employee page.
 
 ---
 
-## 5.3 Employee Filtering
+### 3.2 Employee Management
 
-The employee listing must support filtering.
+The system must support employee record management.
 
-At minimum, filters should include:
+Each employee should contain:
 
-* country
-* department
-* role
+* Internal ID
+* Employee code
+* First name
+* Last name
+* Full name
+* Email
+* Country
+* Department
+* Role
+* Employment status
+* Creation timestamp
+* Last update timestamp
 
-Multiple filters should be capable of being applied together.
+Supported employment statuses include:
 
-Example:
+* `ACTIVE`
+* `INACTIVE`
 
-```text
-Country = United States
-Department = Engineering
-Role = Senior Software Engineer
-```
-
----
-
-## 5.4 Pagination
-
-Employee results must be paginated.
-
-Example request:
-
-```text
-GET /api/v1/employees?page=1&pageSize=50
-```
-
-The server should return only the requested page.
-
-The client must not download all 10,000+ employees merely to display a single page.
+Employee codes and email addresses must be unique.
 
 ---
 
-## 5.5 Sorting
+### 3.3 Employee Listing
 
-The employee list should support controlled sorting.
+The employee list must support:
 
-Possible sorting fields include:
+* Pagination
+* Search
+* Filtering
+* Sorting where supported by the API
+* Loading states
+* Empty states
+* Error states
+* Responsive presentation
 
-* employee name
-* salary
-* department
-* country
-* role
+Pagination must be performed server-side.
 
-The server must validate supported sort fields rather than accepting arbitrary database fields.
-
----
-
-## 5.6 Employee Details
-
-Users must be able to open an individual employee.
-
-The employee details page should provide:
-
-### Identity
-
-* employee identifier
-* first name
-* last name
-* full name
-* email
-
-### Organization
-
-* department
-* role
-* country
-
-### Compensation
-
-* salary
-* currency
-* compensation context
+The frontend must not load all 10,000 employees simply to display a single page.
 
 ---
 
-## 5.7 Employee Creation
+### 3.4 Employee Search
 
-The system should allow creation of a new employee.
+Users should be able to search employee records using relevant employee information.
 
-Required fields must be validated before persistence.
+Search may include:
 
-The API must reject malformed or invalid input.
+* Employee code
+* First name
+* Last name
+* Email
 
----
-
-## 5.8 Employee Updates
-
-The system should allow employee information to be updated.
-
-Updates must validate:
-
-* field types
-* required values
-* string lengths
-* supported values
-* salary-related constraints where applicable
+Search parameters must be validated by the backend.
 
 ---
 
-## 5.9 Employee Deletion
+### 3.5 Employee Filtering
 
-The system should allow an employee to be deleted.
+The employee list should support filtering by relevant dimensions such as:
 
-Deletion is destructive and should require confirmation in the user interface.
+* Employment status
+* Country
+* Department
+* Role
 
-The API must return a predictable response when:
+Filters should be represented as API query parameters.
 
-* the employee exists
-* the employee does not exist
-* the request is invalid
-
----
-
-# 6. Salary Requirements
-
-## 6.1 Salary Display
-
-Salary information must be clearly displayed.
-
-The UI should format salaries according to their currency.
+The backend remains responsible for applying the filtering logic.
 
 ---
 
-## 6.2 Salary Editing
+### 3.6 Employee Details
 
-Users must be able to update an employee's salary.
+The application should provide an employee detail experience containing:
 
-Salary values must:
+* Personal information
+* Organizational information
+* Employment status
+* Current compensation information
+* Relevant timestamps
 
-* be numeric
-* be finite
-* be greater than or equal to zero
-* respect application-defined maximum limits
-
-The API must validate the value independently of frontend validation.
-
----
-
-## 6.3 Currency
-
-Salary records must include a currency.
-
-The initial implementation should use a controlled currency value rather than accepting arbitrary currency strings.
+The detail view should clearly distinguish employee information from salary information.
 
 ---
 
-## 6.4 Compensation Context
+## 4. Salary Requirements
 
-The application should provide contextual information around compensation where available.
+### 4.1 Salary Information
 
-Examples include:
+Salary records should contain relevant compensation information, including:
 
-* salary amount
-* currency
-* organizational position
-* comparison against relevant aggregates
+* Employee relationship
+* Base salary
+* Currency
+* Effective date
+* Creation timestamp
+* Last update timestamp
 
----
-
-# 7. Analytics Requirements
-
-## 7.1 Overview
-
-The system must provide compensation overview metrics.
-
-At minimum:
-
-* total employees
-* total payroll
-* average salary
-* median salary where practical
+The database should maintain a clear relationship between an employee and their salary record.
 
 ---
 
-## 7.2 Salary Distribution
+### 4.2 Salary Updates
 
-The system must provide a salary distribution visualization.
+The application should support salary updates through a controlled API workflow.
 
-The implementation may group salaries into ranges such as:
+Salary updates must:
 
-```text
-0–25,000
-25,001–50,000
-50,001–75,000
-75,001–100,000
-100,001+
-```
+* Validate the request body
+* Validate numeric salary values
+* Validate currency information
+* Validate effective dates where applicable
+* Return a clear success response
+* Return structured validation errors when invalid input is provided
 
-The exact ranges should be determined by the final dataset and product design.
-
----
-
-## 7.3 Country Analysis
-
-The system must support salary analysis by country.
-
-At minimum, the analysis should expose:
-
-* employee count
-* average salary
-* total payroll
+Business logic should remain in the service layer rather than inside route handlers.
 
 ---
 
-## 7.4 Department Analysis
+## 5. Analytics Requirements
 
-The system must support salary analysis by department.
+The analytics section should provide useful compensation insights.
 
-At minimum:
+Analytics may include:
 
-* employee count
-* average salary
-* total payroll
+* Average salary
+* Minimum salary
+* Maximum salary
+* Salary distribution
+* Department-level salary comparisons
+* Country-level salary comparisons
+* Employee count by department
+* Employee count by country
 
----
-
-## 7.5 Role Analysis
-
-The system must support salary analysis by role.
-
-At minimum:
-
-* employee count
-* average salary
-* total payroll
+Analytics calculations should be performed by the backend where possible so that the frontend does not need to retrieve the entire dataset.
 
 ---
 
-# 8. Dashboard Requirements
+## 6. API Requirements
 
-The dashboard should provide an executive-style overview of compensation.
+The backend API must:
 
-The dashboard should contain:
+* Use versioned API routes
+* Return JSON responses
+* Validate request parameters
+* Validate request bodies
+* Return consistent error responses
+* Separate routing from controllers
+* Separate controllers from services
+* Separate services from repositories
+* Avoid leaking database-specific implementation details unnecessarily
 
-### KPI Section
+The current API namespace is:
 
-* total employees
-* total payroll
-* average salary
-* median salary
-
-### Visualization Section
-
-* salary distribution
-* country analysis
-* department analysis
-
-The dashboard should not attempt to display every available data point simultaneously.
+`/api/v1`
 
 ---
 
-# 9. API Requirements
+## 7. Validation Requirements
 
-The API namespace is:
+Input validation must occur at the API boundary.
 
-```text
-/api/v1
-```
+Invalid input should result in:
 
-## Employees
-
-```http
-GET    /api/v1/employees
-GET    /api/v1/employees/:id
-POST   /api/v1/employees
-PATCH  /api/v1/employees/:id
-DELETE /api/v1/employees/:id
-```
-
-## Salary
-
-```http
-GET   /api/v1/employees/:id/salary
-PATCH /api/v1/employees/:id/salary
-```
-
-## Analytics
-
-```http
-GET /api/v1/analytics/overview
-GET /api/v1/analytics/distribution
-GET /api/v1/analytics/countries
-GET /api/v1/analytics/departments
-GET /api/v1/analytics/roles
-```
-
-## Metadata
-
-```http
-GET /api/v1/countries
-GET /api/v1/departments
-GET /api/v1/roles
-```
-
-## Health
-
-```http
-GET /health
-```
-
----
-
-# 10. API Behavior
-
-The API should provide consistent responses.
-
-Successful responses should contain predictable data structures.
-
-Errors should provide:
-
-* HTTP status
-* machine-readable error code
-* human-readable message
-* request identifier where appropriate
-
-Internal implementation details and stack traces must not be exposed to clients.
-
----
-
-# 11. Validation Requirements
-
-All external input must be validated.
+* HTTP `400 Bad Request`
+* A structured error response
+* A useful validation message
 
 Validation should cover:
 
-* path parameters
-* query parameters
-* request bodies
-* pagination
-* filters
-* sorting
-* employee fields
-* salary values
-
-Frontend validation improves user experience but does not replace backend validation.
+* Pagination values
+* Search parameters
+* Filter values
+* Salary values
+* IDs
+* Enumerated values
+* Required fields
 
 ---
 
-# 12. Performance Requirements
+## 8. Error Handling Requirements
+
+The application must gracefully handle:
+
+* Invalid API requests
+* Missing records
+* Database failures
+* Unexpected server errors
+* Network failures
+* Empty search results
+* Invalid form submissions
+
+The frontend should provide user-friendly error states.
+
+The backend should not expose stack traces or sensitive internal information in production responses.
+
+---
+
+## 9. Performance Requirements
+
+The application should remain usable with approximately 10,000 employees.
 
 The system should:
 
-* paginate employee data
-* use appropriate database indexes
-* avoid unnecessary API payloads
-* debounce employee search
-* avoid unnecessary frontend requests
-* cache suitable read operations
-* perform aggregation at the database/application layer
-* avoid processing the entire dataset in the browser
+* Use server-side pagination
+* Avoid unnecessary full-table queries
+* Use database indexes for frequently queried fields
+* Retrieve only required relational information
+* Avoid N+1 query patterns
+* Keep frontend rendering scoped to visible data
+* Avoid unnecessary API requests
 
 ---
 
-# 13. Dataset Requirements
+## 10. Accessibility Requirements
 
-The development seed must create at least:
+The UI should follow accessible application practices including:
 
-**10,000 employees**
+* Semantic HTML
+* Keyboard navigation
+* Visible focus states
+* Appropriate button labels
+* Form labels
+* Accessible loading and error states
+* Sufficient text contrast
+* Responsive layouts
 
-The seed process should be deterministic.
-
-Running the seed repeatedly should produce predictable development data.
-
-Seed data should represent realistic organizational variation across:
-
-* names
-* emails
-* countries
-* departments
-* roles
-* salaries
-* currencies
+Accessibility is treated as part of product quality rather than a separate feature.
 
 ---
 
-# 14. Reliability Requirements
+## 11. Responsive Requirements
 
-The backend must provide:
+The application must support:
 
-* structured error handling
-* centralized error middleware
-* request identifiers
-* validation
-* health checks
-* controlled logging
+* Desktop screens
+* Tablet layouts
+* Smaller screens
 
-The system should fail gracefully when:
+The navigation system should adapt to available screen width.
 
-* the database is unavailable
-* an employee does not exist
-* a request is malformed
-* an analytics query fails
+Tables and dense data views should remain usable on smaller screens without breaking the overall application layout.
 
 ---
 
-# 15. Security Requirements
+## 12. Testing Requirements
 
-The system must:
+The application should have automated coverage for critical functionality.
 
-* keep secrets outside source code
-* use environment variables
-* validate untrusted input
-* restrict CORS
-* use secure HTTP middleware
-* avoid leaking stack traces
-* avoid exposing unnecessary internal fields
-* use safe database access patterns
+Testing layers include:
 
----
+### Unit tests
 
-# 16. Accessibility Requirements
+Business logic should be tested independently.
 
-The UI must support:
+Examples:
 
-* keyboard navigation
-* visible focus states
-* semantic HTML
-* accessible form labels
-* meaningful button names
-* readable contrast
-* accessible error messages
-* accessible loading states
+* Employee service
+* Salary service
+* Analytics service
 
-Charts should provide alternative textual context where appropriate.
+### Integration/API tests
 
----
+API workflows should be tested against the application/backend.
 
-# 17. Responsive Requirements
+Examples:
 
-The application should support:
+* Employee listing
+* Employee filtering
+* Salary operations
+* Analytics endpoints
 
-* desktop
-* tablet
-* mobile
+### End-to-end tests
 
-Desktop is the primary target because the product is intended for HR and administrative workflows.
+Critical user journeys should be tested through the application UI.
 
-On smaller screens:
+Examples:
 
-* navigation should collapse
-* cards should stack
-* filters should adapt
-* tables should remain usable
-* content should not overflow the viewport unnecessarily
+* Opening the dashboard
+* Navigating to employees
+* Searching employees
+* Viewing employee details
+* Performing salary workflows
+* Viewing analytics
 
 ---
 
-# 18. Non-Functional Requirements
+## 13. Non-Functional Requirements
 
-## Maintainability
+### Maintainability
 
-Code should have clear responsibilities.
+The system should use clear module boundaries and predictable naming.
 
-## Scalability
+### Scalability
 
-The architecture should allow future migration from SQLite to a production database such as PostgreSQL without requiring a complete application rewrite.
+The architecture should make it possible to replace SQLite with a production database such as PostgreSQL without rewriting the application layers.
 
-## Observability
+### Reliability
 
-Important server operations should produce useful structured logs.
+API failures should be handled consistently.
 
-## Testability
+### Security
 
-Business logic should be testable without requiring a browser.
+The system should validate input, protect HTTP responses, avoid exposing secrets, and apply sensible request protections.
 
-## Accessibility
+### Observability
 
-User workflows should remain usable with keyboard and assistive technology.
-
----
-
-# 19. Out of Scope
-
-The first release will not implement:
-
-* payroll execution
-* tax calculation
-* bank transfers
-* benefits administration
-* recruitment
-* attendance management
-* performance management
-* employee self-service
-* enterprise SSO
-* multi-tenancy
-* complex role-based access control
-* microservices
-* Kubernetes
-* Kafka
-
-These capabilities may be considered later if product requirements expand.
+Backend failures should be logged with sufficient context to support troubleshooting without exposing sensitive data.
 
 ---
 
-# 20. Acceptance Criteria
+## 14. Out of Scope
 
-The implementation will satisfy the core requirements when:
+The following functionality is intentionally outside the current assessment scope:
 
-* at least 10,000 employees can be seeded
-* employees can be listed
-* employees can be searched
-* employees can be filtered
-* employees can be sorted
-* employees can be paginated
-* employee details can be viewed
-* employees can be created
-* employees can be updated
-* employees can be deleted
-* salaries can be viewed
-* salaries can be updated
-* dashboard metrics are calculated correctly
-* salary distribution is available
-* country analysis is available
-* department analysis is available
-* role analysis is available
-* validation prevents invalid requests
-* errors are handled consistently
-* unit tests pass
-* integration tests pass
-* E2E tests pass
-* production builds succeed
+* Payroll processing
+* Tax calculation
+* Employee benefits management
+* Bank/payment processing
+* Timesheets
+* Leave management
+* Recruitment
+* Performance reviews
+* Authentication/authorization implementation
+* Multi-tenant organization management
+* External HRIS synchronization
+* Real-time collaboration
+
+These may be considered future improvements.
 
 ---
 
-# 21. Requirement Priority
+## 15. Acceptance Criteria
 
-| Priority | Area                   |
-| -------- | ---------------------- |
-| P0       | Employee listing       |
-| P0       | Search                 |
-| P0       | Filtering              |
-| P0       | Pagination             |
-| P0       | Employee details       |
-| P0       | Salary management      |
-| P0       | Dashboard metrics      |
-| P0       | Analytics              |
-| P1       | Employee creation      |
-| P1       | Employee editing       |
-| P1       | Employee deletion      |
-| P1       | Sorting                |
-| P1       | Responsive UI          |
-| P1       | Accessibility          |
-| P1       | Automated testing      |
-| P2       | Advanced analytics     |
-| P2       | Advanced authorization |
-| P2       | Extended reporting     |
+The application is considered functionally complete when:
 
-P0 requirements represent the minimum product capability.
+1. Employees can be listed through the UI.
+2. Employee pagination works correctly.
+3. Employee search works correctly.
+4. Employee filters work correctly.
+5. Employee status is displayed correctly.
+6. Employee details can be inspected.
+7. Salary information can be viewed.
+8. Salary workflows validate invalid input.
+9. Analytics return meaningful aggregated information.
+10. The UI handles loading, empty, and error states.
+11. Automated tests cover critical workflows.
+12. The application can run locally using the documented setup.
+13. The architecture and engineering decisions are documented.
+14. The application can be built successfully for deployment.
 
-P1 requirements strengthen the production quality of the application.
+---
 
-P2 requirements are deliberately deferred to prevent unnecessary scope expansion.
+## 16. Success Criteria
+
+The project should demonstrate more than functional CRUD.
+
+Success means the implementation demonstrates:
+
+* Thoughtful architecture
+* Strong TypeScript usage
+* Appropriate database design
+* Server-side data handling
+* Input validation
+* Automated testing
+* Responsive UX
+* Performance awareness
+* Security awareness
+* Clear engineering trade-offs
+* Maintainable documentation
+* Incremental development through meaningful Git commits
