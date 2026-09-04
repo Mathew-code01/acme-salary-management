@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client"
   output   = "../server/src/generated/prisma"
@@ -5,6 +7,11 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
 }
 
 model Country {
@@ -43,16 +50,17 @@ model Role {
 }
 
 model Employee {
-  id           Int        @id @default(autoincrement())
-  employeeCode String     @unique
+  id           Int            @id @default(autoincrement())
+  employeeCode String         @unique
   firstName    String
   lastName     String
-  email        String     @unique
+  email        String         @unique
   countryId    Int
   departmentId Int
   roleId       Int
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  status       EmployeeStatus @default(ACTIVE)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   country      Country    @relation(fields: [countryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
@@ -62,6 +70,7 @@ model Employee {
   @@index([countryId])
   @@index([departmentId])
   @@index([roleId])
+  @@index([status])
   @@index([lastName, firstName])
   @@index([departmentId, roleId])
   @@index([countryId, departmentId])

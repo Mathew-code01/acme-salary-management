@@ -286,6 +286,7 @@ async function seedEmployees() {
     countryId: number;
     departmentId: number;
     roleId: number;
+    status: 'ACTIVE' | 'INACTIVE';
   }> = [];
 
   for (let index = 1; index <= EMPLOYEE_COUNT; index += 1) {
@@ -311,6 +312,10 @@ async function seedEmployees() {
       countryId: country.id,
       departmentId: department.id,
       roleId: role.id,
+
+      // Deterministic status distribution.
+      // Roughly 85% active and 15% inactive.
+      status: random() < 0.85 ? 'ACTIVE' : 'INACTIVE',
     });
   }
 

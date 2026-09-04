@@ -11,12 +11,24 @@ import type {
 /**
  * Fields that are safe to expose in employee list responses.
  */
+/**
+ * Fields that are safe to expose in employee list responses.
+ *
+ * Relations are selected here because the service layer converts
+ * them into the flat shape consumed by the frontend.
+ */
 const employeeListSelect = {
   id: true,
+
   employeeCode: true,
+
   firstName: true,
+
   lastName: true,
+
   email: true,
+
+  status: true,
 
   country: {
     select: {
@@ -41,6 +53,7 @@ const employeeListSelect = {
   },
 
   createdAt: true,
+
   updatedAt: true,
 } as const;
 

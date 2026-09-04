@@ -111,6 +111,7 @@ export const EmployeeScalarFieldEnum = {
   countryId: 'countryId',
   departmentId: 'departmentId',
   roleId: 'roleId',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

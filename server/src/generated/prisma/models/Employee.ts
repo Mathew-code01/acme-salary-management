@@ -49,6 +49,7 @@ export type EmployeeMinAggregateOutputType = {
   countryId: number | null
   departmentId: number | null
   roleId: number | null
+  status: $Enums.EmployeeStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +63,7 @@ export type EmployeeMaxAggregateOutputType = {
   countryId: number | null
   departmentId: number | null
   roleId: number | null
+  status: $Enums.EmployeeStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -75,6 +77,7 @@ export type EmployeeCountAggregateOutputType = {
   countryId: number
   departmentId: number
   roleId: number
+  status: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -104,6 +107,7 @@ export type EmployeeMinAggregateInputType = {
   countryId?: true
   departmentId?: true
   roleId?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,6 +121,7 @@ export type EmployeeMaxAggregateInputType = {
   countryId?: true
   departmentId?: true
   roleId?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -130,6 +135,7 @@ export type EmployeeCountAggregateInputType = {
   countryId?: true
   departmentId?: true
   roleId?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -230,6 +236,7 @@ export type EmployeeGroupByOutputType = {
   countryId: number
   departmentId: number
   roleId: number
+  status: $Enums.EmployeeStatus
   createdAt: Date
   updatedAt: Date
   _count: EmployeeCountAggregateOutputType | null
@@ -266,6 +273,7 @@ export type EmployeeWhereInput = {
   countryId?: Prisma.IntFilter<"Employee"> | number
   departmentId?: Prisma.IntFilter<"Employee"> | number
   roleId?: Prisma.IntFilter<"Employee"> | number
+  status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
@@ -283,6 +291,7 @@ export type EmployeeOrderByWithRelationInput = {
   countryId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   country?: Prisma.CountryOrderByWithRelationInput
@@ -303,6 +312,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   countryId?: Prisma.IntFilter<"Employee"> | number
   departmentId?: Prisma.IntFilter<"Employee"> | number
   roleId?: Prisma.IntFilter<"Employee"> | number
+  status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
@@ -320,6 +330,7 @@ export type EmployeeOrderByWithAggregationInput = {
   countryId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
@@ -341,6 +352,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   countryId?: Prisma.IntWithAggregatesFilter<"Employee"> | number
   departmentId?: Prisma.IntWithAggregatesFilter<"Employee"> | number
   roleId?: Prisma.IntWithAggregatesFilter<"Employee"> | number
+  status?: Prisma.EnumEmployeeStatusWithAggregatesFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
@@ -350,6 +362,7 @@ export type EmployeeCreateInput = {
   firstName: string
   lastName: string
   email: string
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   country: Prisma.CountryCreateNestedOneWithoutEmployeesInput
@@ -367,6 +380,7 @@ export type EmployeeUncheckedCreateInput = {
   countryId: number
   departmentId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   salary?: Prisma.SalaryUncheckedCreateNestedOneWithoutEmployeeInput
@@ -377,6 +391,7 @@ export type EmployeeUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   country?: Prisma.CountryUpdateOneRequiredWithoutEmployeesNestedInput
@@ -394,6 +409,7 @@ export type EmployeeUncheckedUpdateInput = {
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   salary?: Prisma.SalaryUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -408,6 +424,7 @@ export type EmployeeCreateManyInput = {
   countryId: number
   departmentId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -417,6 +434,7 @@ export type EmployeeUpdateManyMutationInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -430,6 +448,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -453,6 +472,7 @@ export type EmployeeCountOrderByAggregateInput = {
   countryId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,6 +493,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   countryId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -486,6 +507,7 @@ export type EmployeeMinOrderByAggregateInput = {
   countryId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   roleId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -628,6 +650,10 @@ export type EmployeeUncheckedUpdateManyWithoutRoleNestedInput = {
   deleteMany?: Prisma.EmployeeScalarWhereInput | Prisma.EmployeeScalarWhereInput[]
 }
 
+export type EnumEmployeeStatusFieldUpdateOperationsInput = {
+  set?: $Enums.EmployeeStatus
+}
+
 export type EmployeeCreateNestedOneWithoutSalaryInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSalaryInput, Prisma.EmployeeUncheckedCreateWithoutSalaryInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSalaryInput
@@ -647,6 +673,7 @@ export type EmployeeCreateWithoutCountryInput = {
   firstName: string
   lastName: string
   email: string
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -662,6 +689,7 @@ export type EmployeeUncheckedCreateWithoutCountryInput = {
   email: string
   departmentId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   salary?: Prisma.SalaryUncheckedCreateNestedOneWithoutEmployeeInput
@@ -704,6 +732,7 @@ export type EmployeeScalarWhereInput = {
   countryId?: Prisma.IntFilter<"Employee"> | number
   departmentId?: Prisma.IntFilter<"Employee"> | number
   roleId?: Prisma.IntFilter<"Employee"> | number
+  status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
@@ -713,6 +742,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   firstName: string
   lastName: string
   email: string
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   country: Prisma.CountryCreateNestedOneWithoutEmployeesInput
@@ -728,6 +758,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   email: string
   countryId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   salary?: Prisma.SalaryUncheckedCreateNestedOneWithoutEmployeeInput
@@ -763,6 +794,7 @@ export type EmployeeCreateWithoutRoleInput = {
   firstName: string
   lastName: string
   email: string
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   country: Prisma.CountryCreateNestedOneWithoutEmployeesInput
@@ -778,6 +810,7 @@ export type EmployeeUncheckedCreateWithoutRoleInput = {
   email: string
   countryId: number
   departmentId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   salary?: Prisma.SalaryUncheckedCreateNestedOneWithoutEmployeeInput
@@ -813,6 +846,7 @@ export type EmployeeCreateWithoutSalaryInput = {
   firstName: string
   lastName: string
   email: string
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   country: Prisma.CountryCreateNestedOneWithoutEmployeesInput
@@ -829,6 +863,7 @@ export type EmployeeUncheckedCreateWithoutSalaryInput = {
   countryId: number
   departmentId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -854,6 +889,7 @@ export type EmployeeUpdateWithoutSalaryInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   country?: Prisma.CountryUpdateOneRequiredWithoutEmployeesNestedInput
@@ -870,6 +906,7 @@ export type EmployeeUncheckedUpdateWithoutSalaryInput = {
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -882,6 +919,7 @@ export type EmployeeCreateManyCountryInput = {
   email: string
   departmentId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -891,6 +929,7 @@ export type EmployeeUpdateWithoutCountryInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEmployeesNestedInput
@@ -906,6 +945,7 @@ export type EmployeeUncheckedUpdateWithoutCountryInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   salary?: Prisma.SalaryUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -919,6 +959,7 @@ export type EmployeeUncheckedUpdateManyWithoutCountryInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -931,6 +972,7 @@ export type EmployeeCreateManyDepartmentInput = {
   email: string
   countryId: number
   roleId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -940,6 +982,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   country?: Prisma.CountryUpdateOneRequiredWithoutEmployeesNestedInput
@@ -955,6 +998,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   salary?: Prisma.SalaryUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -968,6 +1012,7 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   roleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -980,6 +1025,7 @@ export type EmployeeCreateManyRoleInput = {
   email: string
   countryId: number
   departmentId: number
+  status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -989,6 +1035,7 @@ export type EmployeeUpdateWithoutRoleInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   country?: Prisma.CountryUpdateOneRequiredWithoutEmployeesNestedInput
@@ -1004,6 +1051,7 @@ export type EmployeeUncheckedUpdateWithoutRoleInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   salary?: Prisma.SalaryUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -1017,6 +1065,7 @@ export type EmployeeUncheckedUpdateManyWithoutRoleInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   countryId?: Prisma.IntFieldUpdateOperationsInput | number
   departmentId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1032,6 +1081,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   countryId?: boolean
   departmentId?: boolean
   roleId?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
@@ -1049,6 +1099,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   countryId?: boolean
   departmentId?: boolean
   roleId?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
@@ -1065,6 +1116,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   countryId?: boolean
   departmentId?: boolean
   roleId?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
@@ -1081,11 +1133,12 @@ export type EmployeeSelectScalar = {
   countryId?: boolean
   departmentId?: boolean
   roleId?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeCode" | "firstName" | "lastName" | "email" | "countryId" | "departmentId" | "roleId" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeCode" | "firstName" | "lastName" | "email" | "countryId" | "departmentId" | "roleId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
@@ -1120,6 +1173,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     countryId: number
     departmentId: number
     roleId: number
+    status: $Enums.EmployeeStatus
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["employee"]>
@@ -1557,6 +1611,7 @@ export interface EmployeeFieldRefs {
   readonly countryId: Prisma.FieldRef<"Employee", 'Int'>
   readonly departmentId: Prisma.FieldRef<"Employee", 'Int'>
   readonly roleId: Prisma.FieldRef<"Employee", 'Int'>
+  readonly status: Prisma.FieldRef<"Employee", 'EmployeeStatus'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }

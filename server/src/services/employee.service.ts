@@ -11,6 +11,10 @@ import type {
 } from '../types/employee';
 
 export class EmployeeService {
+  /**
+   * List employees with their organizational relationships
+   * flattened into the API contract expected by the frontend.
+   */
   async list(query: EmployeeListQuery) {
     const { items, total } = await employeeRepository.findMany(query);
 
@@ -18,14 +22,44 @@ export class EmployeeService {
 
     return {
       items: items.map((employee) => ({
-        ...employee,
+        id: employee.id,
+
+        employeeCode: employee.employeeCode,
+
+        firstName: employee.firstName,
+
+        lastName: employee.lastName,
+
         fullName: `${employee.firstName} ${employee.lastName}`,
+
+        email: employee.email,
+
+        status: employee.status,
+
+        countryId: employee.country.id,
+
+        countryName: employee.country.name,
+
+        departmentId: employee.department.id,
+
+        departmentName: employee.department.name,
+
+        roleId: employee.role.id,
+
+        roleName: employee.role.name,
+
+        createdAt: employee.createdAt,
+
+        updatedAt: employee.updatedAt,
       })),
 
       pagination: {
         page: query.page,
+
         pageSize: query.pageSize,
+
         total,
+
         totalPages,
 
         hasNextPage: query.page < totalPages,
@@ -35,6 +69,9 @@ export class EmployeeService {
     };
   }
 
+  /**
+   * Get a single employee with full relational data.
+   */
   async getById(id: number) {
     const employee = await employeeRepository.findById(id);
 
@@ -49,6 +86,9 @@ export class EmployeeService {
     };
   }
 
+  /**
+   * Create an employee.
+   */
   async create(input: CreateEmployeeInput) {
     const [existingCode, existingEmail, countryExists, departmentExists, roleExists] =
       await Promise.all([
@@ -98,6 +138,9 @@ export class EmployeeService {
     };
   }
 
+  /**
+   * Update an employee.
+   */
   async update(id: number, input: UpdateEmployeeInput) {
     const existing = await employeeRepository.findById(id);
 
@@ -160,6 +203,9 @@ export class EmployeeService {
     };
   }
 
+  /**
+   * Delete an employee.
+   */
   async delete(id: number) {
     const existing = await employeeRepository.findById(id);
 

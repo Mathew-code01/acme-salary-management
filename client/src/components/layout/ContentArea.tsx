@@ -1,10 +1,17 @@
 // client/src/components/layout/ContentArea.tsx
 
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-export function ContentArea({ children }: { children: ReactNode }) {
+interface ContentAreaProps {
+  children: ReactNode;
+}
+
+export function ContentArea({ children }: ContentAreaProps) {
   return (
-    <main id="main-content" className="min-w-0 flex-1 overflow-x-hidden bg-background">
+    <main
+      id="main-content"
+      className={['min-w-0 flex-1 overflow-x-hidden', 'bg-background'].join(' ')}
+    >
       {children}
     </main>
   );

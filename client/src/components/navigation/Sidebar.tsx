@@ -1,51 +1,65 @@
 // client/src/components/navigation/Sidebar.tsx
 
-import { BarChart3, Building2, LayoutDashboard, Users } from "lucide-react";
+import { Building2 } from 'lucide-react';
 
-import { NavigationItem } from "./NavigationItem";
-
-const navigation = [
-  {
-    label: "Dashboard",
-    to: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Employees",
-    to: "/employees",
-    icon: Users,
-  },
-  {
-    label: "Analytics",
-    to: "/analytics",
-    icon: BarChart3,
-  },
-];
+import { NavigationItem } from './NavigationItem';
+import { navigationItems } from './navigation';
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border bg-card lg:flex lg:flex-col">
-      <div className="flex h-16 items-center border-b border-border px-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Building2 className="h-5 w-5" />
+    <aside
+      aria-label="Primary sidebar"
+      className={[
+        'hidden w-64 shrink-0 border-r border-border bg-card',
+        'lg:flex lg:flex-col',
+      ].join(' ')}
+    >
+      {/* Brand */}
+      <div className="flex h-16 shrink-0 items-center border-b border-border px-5">
+        <div className="flex min-w-0 items-center gap-3">
+          <div
+            aria-hidden="true"
+            className={[
+              'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
+              'bg-primary text-primary-foreground',
+              'shadow-sm',
+            ].join(' ')}
+          >
+            <Building2 className="h-5 w-5" strokeWidth={1.9} />
           </div>
 
-          <div>
-            <p className="text-sm font-semibold">ACME</p>
-            <p className="text-xs text-muted-foreground">Salary Management</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold tracking-tight text-foreground">ACME</p>
+
+            <p className="truncate text-xs text-muted-foreground">Salary Management</p>
           </div>
         </div>
       </div>
 
-      <nav aria-label="Primary navigation" className="flex-1 space-y-1 p-4">
-        {navigation.map((item) => (
-          <NavigationItem key={item.to} {...item} />
-        ))}
+      {/* Navigation */}
+      <nav aria-label="Primary navigation" className="flex-1 overflow-y-auto p-3">
+        <div className="space-y-1">
+          {navigationItems.map((item) => (
+            <NavigationItem
+              key={item.to}
+              label={item.label}
+              description={item.description}
+              to={item.to}
+              icon={item.icon}
+            />
+          ))}
+        </div>
       </nav>
 
-      <div className="border-t border-border p-4">
-        <p className="text-xs text-muted-foreground">Internal HR Platform</p>
+      {/* Workspace information */}
+      <div className="shrink-0 border-t border-border p-4">
+        <div className="rounded-lg bg-muted/50 px-3 py-3">
+          <p className="text-xs font-medium text-foreground">Internal HR Platform</p>
+
+          <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
+            Compensation workspace
+          </p>
+        </div>
       </div>
     </aside>
   );
