@@ -13,7 +13,7 @@ export function EmployeeSearch({ value, onChange, disabled = false }: EmployeeSe
     <div className="relative w-full">
       <Search
         aria-hidden="true"
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground sm:h-[18px] sm:w-[18px]"
       />
 
       <label htmlFor="employee-search" className="sr-only">
@@ -29,7 +29,7 @@ export function EmployeeSearch({ value, onChange, disabled = false }: EmployeeSe
         placeholder="Search by name, email or employee ID..."
         autoComplete="off"
         spellCheck={false}
-        className="h-10 w-full rounded-md border border-border bg-background pl-9 pr-9 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-10 text-sm text-foreground shadow-sm outline-none transition-all placeholder:text-muted-foreground hover:border-foreground/20 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-60 sm:h-12"
       />
 
       {value ? (
@@ -38,9 +38,9 @@ export function EmployeeSearch({ value, onChange, disabled = false }: EmployeeSe
           aria-label="Clear employee search"
           onClick={() => onChange('')}
           disabled={disabled}
-          className="absolute right-2 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
+          className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 disabled:opacity-50"
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4" aria-hidden="true" />
         </button>
       ) : null}
     </div>
