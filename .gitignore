@@ -23,3 +23,6 @@ playwright-report/
 test-results/
 
 .prisma/
+
+# Prisma local SQLite database
+server/prisma/dev.db
