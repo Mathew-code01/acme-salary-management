@@ -1,4 +1,3 @@
-// server/src/server.ts
 
 import { createServer } from 'node:http';
 
@@ -12,11 +11,13 @@ const httpServer = createServer(app);
 let isShuttingDown = false;
 
 function startServer(): void {
+  const host = env.nodeEnv === 'production' ? '0.0.0.0' : env.host;
+
   httpServer.once('error', (error) => {
     logger.fatal(
       {
         err: error,
-        host: env.host,
+        host,
         port: env.port,
       },
       'HTTP server failed to start',
@@ -25,14 +26,14 @@ function startServer(): void {
     process.exit(1);
   });
 
-  httpServer.listen(env.port, env.host, () => {
+  httpServer.listen(env.port, host, () => {
     logger.info(
       {
-        host: env.host,
+        host,
         port: env.port,
         environment: env.nodeEnv,
       },
-      `API server listening on ${env.host}:${env.port}`,
+      `API server listening on ${host}:${env.port}`,
     );
   });
 }
