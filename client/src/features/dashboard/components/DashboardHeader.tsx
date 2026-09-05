@@ -1,5 +1,5 @@
 // client/src/features/dashboard/components/DashboardHeader.tsx
-import { Activity, CalendarClock, RefreshCw, ShieldCheck } from 'lucide-react';
+import { CalendarClock, RefreshCw, ShieldCheck } from 'lucide-react';
 
 import { PageHeader } from '../../../components/layout/PageHeader';
 

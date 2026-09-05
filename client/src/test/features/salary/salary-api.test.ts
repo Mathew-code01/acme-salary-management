@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { apiClient } from '@/lib/api-client';
+import { apiClient } from '../../../lib/api-client';
 
-import { salaryApi } from '@/features/salary/api/salary-api';
+import { salaryApi } from '../../../features/salary/api/salary-api';
 
-vi.mock('@/lib/api-client', () => ({
+vi.mock('../../../lib/api-client', () => ({
   apiClient: {
     get: vi.fn(),
     post: vi.fn(),
@@ -13,150 +13,108 @@ vi.mock('@/lib/api-client', () => ({
   },
 }));
 
-const mockedApiClient =
-  vi.mocked(apiClient);
+const mockedApiClient = vi.mocked(apiClient, {
+  deep: true,
+});
 
-describe(
-  'salaryApi',
-  () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
+describe('salaryApi', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('gets salary by id', async () => {
+    const salary = {
+      id: 1,
+      employeeId: 10,
+      amountCents: 7500000,
+      currency: 'USD',
+      effectiveFrom: '2026-01-01',
+    };
+
+    mockedApiClient.get.mockResolvedValueOnce({
+      data: {
+        success: true,
+        data: salary,
+      },
     });
 
-    it(
-      'gets salary by id',
-      async () => {
-        const salary = {
-          id: 1,
-          employeeId: 10,
-          amount: 75000,
-          currency: 'USD',
-        };
+    const result = await salaryApi.getById(1);
 
-        mockedApiClient.get.mockResolvedValueOnce({
-          data: {
-            success: true,
-            data: salary,
-          },
-        });
+    expect(mockedApiClient.get).toHaveBeenCalledWith('/salaries/1');
 
-        const result =
-          await salaryApi.getById(1);
+    expect(result).toEqual(salary);
+  });
 
-        expect(
-          mockedApiClient.get,
-        ).toHaveBeenCalledWith(
-          '/salaries/1',
-        );
+  it('creates salary', async () => {
+    const input = {
+      employeeId: 10,
+      amountCents: 7500000,
+      currency: 'USD',
+      effectiveFrom: '2026-01-01',
+    };
 
-        expect(result).toEqual(
-          salary,
-        );
+    const salary = {
+      id: 1,
+      ...input,
+    };
+
+    mockedApiClient.post.mockResolvedValueOnce({
+      data: {
+        success: true,
+        data: salary,
       },
-    );
+    });
 
-    it(
-      'creates salary',
-      async () => {
-        const input = {
-          employeeId: 10,
-          amount: 75000,
-          currency: 'USD',
-        };
+    const result = await salaryApi.create(input);
 
-        const salary = {
-          id: 1,
-          ...input,
-        };
+    expect(mockedApiClient.post).toHaveBeenCalledWith('/salaries', input);
 
-        mockedApiClient.post.mockResolvedValueOnce({
-          data: {
-            success: true,
-            data: salary,
-          },
-        });
+    expect(result).toEqual(salary);
+  });
 
-        const result =
-          await salaryApi.create(input);
+  it('updates salary', async () => {
+    const input = {
+      amountCents: 8500000,
+      currency: 'USD',
+      effectiveFrom: '2026-02-01',
+    };
 
-        expect(
-          mockedApiClient.post,
-        ).toHaveBeenCalledWith(
-          '/salaries',
-          input,
-        );
+    const salary = {
+      id: 1,
+      employeeId: 10,
+      ...input,
+    };
 
-        expect(result).toEqual(
-          salary,
-        );
+    mockedApiClient.patch.mockResolvedValueOnce({
+      data: {
+        success: true,
+        data: salary,
       },
-    );
+    });
 
-    it(
-      'updates salary',
-      async () => {
-        const input = {
-          amount: 85000,
-          currency: 'USD',
-        };
+    const result = await salaryApi.update(1, input);
 
-        const salary = {
+    expect(mockedApiClient.patch).toHaveBeenCalledWith('/salaries/1', input);
+
+    expect(result).toEqual(salary);
+  });
+
+  it('deletes salary', async () => {
+    mockedApiClient.delete.mockResolvedValueOnce({
+      data: {
+        success: true,
+        data: {
           id: 1,
-          employeeId: 10,
-          ...input,
-        };
-
-        mockedApiClient.patch.mockResolvedValueOnce({
-          data: {
-            success: true,
-            data: salary,
-          },
-        });
-
-        const result =
-          await salaryApi.update(
-            1,
-            input,
-          );
-
-        expect(
-          mockedApiClient.patch,
-        ).toHaveBeenCalledWith(
-          '/salaries/1',
-          input,
-        );
-
-        expect(result).toEqual(
-          salary,
-        );
+        },
       },
-    );
+    });
 
-    it(
-      'deletes salary',
-      async () => {
-        mockedApiClient.delete.mockResolvedValueOnce({
-          data: {
-            success: true,
-            data: {
-              id: 1,
-            },
-          },
-        });
+    const result = await salaryApi.delete(1);
 
-        const result =
-          await salaryApi.delete(1);
+    expect(mockedApiClient.delete).toHaveBeenCalledWith('/salaries/1');
 
-        expect(
-          mockedApiClient.delete,
-        ).toHaveBeenCalledWith(
-          '/salaries/1',
-        );
-
-        expect(result).toEqual({
-          id: 1,
-        });
-      },
-    );
-  },
-);
+    expect(result).toEqual({
+      id: 1,
+    });
+  });
+});

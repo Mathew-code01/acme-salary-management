@@ -1,34 +1,56 @@
+
 import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { analyticsApi } from '@/features/analytics/api/analytics-api';
+import { analyticsApi } from '../../../features/analytics/api/analytics-api';
 
-import { useAnalytics } from '@/features/analytics/hooks/use-analytics';
+import { useAnalytics } from '../../../features/analytics/hooks/use-analytics';
 
-vi.mock('@/features/analytics/api/analytics-api', () => ({
+import type { AnalyticsData } from '../../../features/analytics/types/analytics';
+
+vi.mock('../../../features/analytics/api/analytics-api', () => ({
   analyticsApi: {
     getAll: vi.fn(),
   },
 }));
 
-const mockedAnalyticsApi = vi.mocked(analyticsApi);
+const mockedAnalyticsApi = vi.mocked(analyticsApi, {
+  deep: true,
+});
 
-const analyticsFixture = {
+const analyticsFixture: AnalyticsData = {
   overview: {
-    totalEmployees: 10000,
-    totalPayroll: 125000000,
-    averageSalary: 12500,
-    medianSalary: 11200,
+    metrics: {
+      employeeCount: 10_000,
+      salaryRecordCount: 10_000,
+      averageSalaryCents: 1_250_000,
+      medianSalaryCents: 1_120_000,
+      currencies: 1,
+    },
+
+    payrollByCurrency: [],
   },
 
-  distribution: [],
+  distribution: {
+    currency: 'USD',
+    totalEmployees: 10_000,
+    buckets: [],
+  },
 
-  countries: [],
+  countries: {
+    rows: [],
+  },
 
-  departments: [],
+  departments: {
+    rows: [],
+  },
 
-  roles: [],
+  roles: {
+    rows: [],
+  },
+
+  generatedAt: '2026-09-05T00:00:00.000Z',
 };
 
 describe('useAnalytics', () => {
@@ -102,7 +124,9 @@ describe('useAnalytics', () => {
   });
 
   it('exposes API errors', async () => {
-    mockedAnalyticsApi.getAll.mockRejectedValueOnce(new Error('Analytics service unavailable'));
+    mockedAnalyticsApi.getAll.mockRejectedValueOnce(
+      new Error('Analytics service unavailable'),
+    );
 
     const { result } = renderHook(() => useAnalytics());
 
@@ -114,7 +138,10 @@ describe('useAnalytics', () => {
   });
 
   it('ignores aborted requests', async () => {
-    const abortError = new DOMException('Request aborted', 'AbortError');
+    const abortError = new DOMException(
+      'Request aborted',
+      'AbortError',
+    );
 
     mockedAnalyticsApi.getAll.mockRejectedValueOnce(abortError);
 

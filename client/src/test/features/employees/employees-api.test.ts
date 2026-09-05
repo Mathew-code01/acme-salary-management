@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { employeesApi } from '@/features/employees/api/employees-api';
+import { employeesApi } from '../../../features/employees/api/employees-api';
 
 const fetchMock = vi.fn();
 
